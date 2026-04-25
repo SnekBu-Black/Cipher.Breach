@@ -2848,7 +2848,7 @@ function normalizeAnswer(value){
   return (value || '').toUpperCase().replace(/[^A-Z0-9]/g,'');
 }
 
-function buildGeneratedPuzzle(base){
+function buildPuzzleInstance(base){
   const answer = pickPuzzleWord(base);
   const puzzle = {
     ...base,
@@ -2915,12 +2915,12 @@ function buildGeneratedPuzzle(base){
 
 function genPuzzle(roomIdx){
   const base = getRoomPuzzle(roomIdx);
-  return buildGeneratedPuzzle(base);
+  return buildPuzzleInstance(base);
 }
 
 function genPracticePuzzle(roomIdx){
   const base = ROOM_PUZZLES[roomIdx] || ROOM_PUZZLES[0];
-  return buildGeneratedPuzzle(base);
+  return buildPuzzleInstance(base);
 }
 
 function getPuzzleGuide(puzzle){
