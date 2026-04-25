@@ -13,10 +13,10 @@
 <link rel="stylesheet" href="assets/styles.css">
 </head>
 <body>
-<!-- 3D render surface -->
+<!-- Main 3D canvas. -->
 <canvas id="cv3"></canvas>
 
-<!-- Start screen -->
+<!-- Opening menu. -->
 <div id="s-title">
   <canvas id="rain"></canvas>
   <div class="title-main">CIPHER.BREACH</div>
@@ -32,7 +32,7 @@
   </div>
 </div>
 
-<!-- Heads-up display -->
+<!-- Persistent game HUD. -->
 <div id="hud">
   <div class="hud-top">
     <div class="hud-pill"><div><div class="hlabel">الغرفة</div><div class="hval" id="h-room">01/06</div></div></div>
@@ -45,19 +45,21 @@
     <div class="hud-pill hud-pill--key" id="key-hud-pill"><div><div class="hlabel">مفتاح الخروج</div><div class="hval gold" id="h-key">ابحث عن حامل المفتاح</div></div></div>
     <div class="hud-pill hud-pill--push"><div><div class="hlabel">الأدوار</div><div class="hval green" id="h-turns">0</div></div></div>
     <button class="hud-control-btn" onclick="togglePauseMenu()">Tab | إيقاف</button>
-  </div>
-  <div class="hud-mid"></div>
-  <div class="hud-bot">
-    <div id="hud-stack">
-      <div id="minimap-wrap">
-        <div class="hlabel mini-label">الخريطة المصغرة</div>
-        <canvas id="minimap" width="140" height="140"></canvas>
+    <div id="mobile-controls" aria-label="Mobile controls">
+      <div class="mobile-actions" aria-label="Action controls">
+        <button class="mobile-btn mobile-action" type="button" id="mobile-action">تفاعل</button>
+        <button class="mobile-btn mobile-pause" type="button" id="mobile-pause">إيقاف</button>
       </div>
+    </div>
+  </div>
+  <div class="hud-bot">
+    <div id="minimap-wrap">
+      <canvas id="minimap" width="140" height="140"></canvas>
     </div>
   </div>
 </div>
 
-<!-- Tutorial helper bubble -->
+<!-- Tutorial guide bubble. -->
 <div id="tutorial-chat">
   <div class="chat-card">
     <div class="chat-tag" id="tutorial-chat-tag">التدريب</div>
@@ -66,7 +68,7 @@
   </div>
 </div>
 
-<!-- Battle and encounter overlays -->
+<!-- Battle and status overlays. -->
 <div id="battle-screen">
   <div class="battle-card">
     <div class="battle-title">واجهة التحدي</div>
@@ -103,7 +105,7 @@
   </div>
 </div>
 
-<!-- Room briefing / explanation / pause modals -->
+<!-- Room flow and pause modals. -->
 <div id="s-room-brief" class="modal-overlay">
   <div class="modal-card room-brief-card">
     <div class="modal-kicker" id="room-brief-kicker">Cipher Brief</div>
@@ -151,7 +153,7 @@
   </div>
 </div>
 
-<!-- End screens -->
+<!-- Result screens. -->
 <div id="s-over">
   <div class="end-title dead">[ انتهى الاتصال ]</div>
   <div id="over-box" class="result-box">
@@ -169,14 +171,6 @@
     مجموع الأدوار: <span id="w-turns">?</span>
   </div>
   <button id="win-btn" class="mbtn btn--end" onclick="startGame()">↺ العب مرة ثانية</button>
-</div>
-
-<!-- Mobile-first controls for the original 3D game -->
-<div id="mobile-controls" aria-label="Mobile controls">
-  <div class="mobile-actions" aria-label="Action controls">
-    <button class="mobile-btn mobile-action" type="button" id="mobile-action">تفاعل</button>
-    <button class="mobile-btn mobile-pause" type="button" id="mobile-pause">إيقاف</button>
-  </div>
 </div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>

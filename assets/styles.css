@@ -1,12 +1,4 @@
-/*
-  CIPHER.BREACH — styles
-  Sections:
-  1. Theme, reset, base canvas
-  2. Title and HUD
-  3. Puzzle, battle, modal UI
-  4. Tutorial, travel, explanation UI
-  5. Utilities and responsive rules
-*/
+/* Base theme, reset, and render surfaces. */
 @import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Tajawal:wght@700;900&display=swap');
 :root{
   --bg:#020609; --cyan:#00e5ff; --green:#00ff88; --red:#ff2255;
@@ -19,11 +11,10 @@ body::after{content:'';position:fixed;inset:0;pointer-events:none;z-index:9999;b
 #cv3{position:fixed;inset:0;width:100%;height:100%;}
 
 
-/* 2. Title and HUD */
+/* Opening menu and persistent HUD. */
 #s-title{position:fixed;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:100;background:rgba(2,6,9,0.92);}
 #rain{position:absolute;inset:0;width:100%;height:100%;display:block;opacity:0.18;}
 .title-main{font-family:'Tajawal',sans-serif;font-size:clamp(2.6rem,8vw,5.4rem);font-weight:900;color:var(--cyan);letter-spacing:0.08em;position:relative;z-index:1;text-shadow:0 0 30px rgba(0,229,255,0.6),0 0 80px rgba(0,229,255,0.2);animation:pulse 3s ease-in-out infinite;}
-.title-sub{font-size:1rem;color:rgba(0,229,255,0.6);letter-spacing:0.4em;margin:0.4rem 0 2rem;position:relative;z-index:1;}
 @keyframes pulse{0%,100%{text-shadow:0 0 20px rgba(0,229,255,0.5);}50%{text-shadow:0 0 55px rgba(0,229,255,0.9),0 0 120px rgba(0,229,255,0.3);}}
 .title-story{font-size:1.2rem;color:var(--text);max-width:760px;text-align:center;line-height:2;margin-bottom:1.8rem;position:relative;z-index:1;direction:rtl;}
 .menu{display:flex;flex-direction:column;gap:0.7rem;width:320px;position:relative;z-index:1;}
@@ -66,20 +57,18 @@ body::after{content:'';position:fixed;inset:0;pointer-events:none;z-index:9999;b
 .hp-float.show{opacity:1;transform:translateY(0);}
 .hp-float.gain{color:var(--green);}
 .hp-float.loss{color:var(--red);}
-.hud-mid{flex:1;pointer-events:none;}
 .hud-bot{
   position:fixed; top:86px; right:14px;
   display:flex; gap:0;
   background:rgba(2,6,9,0.9);
   border:1px solid rgba(0,229,255,0.2);
   backdrop-filter:blur(6px);
-  width:min(184px,20vw); max-height:none;
+  width:clamp(184px,20vw,228px); max-height:none;
   margin:0; pointer-events:all; border-radius:10px; overflow:hidden;
 }
 
-#hud-stack{display:block;width:100%;}
-#minimap-wrap{padding:0.85rem;}
-#minimap{display:block;image-rendering:pixelated;}
+#minimap-wrap{padding:0.6rem;width:100%;}
+#minimap{display:block;width:100%;height:auto;aspect-ratio:1/1;image-rendering:pixelated;}
 .cp-header{display:flex;align-items:center;justify-content:space-between;}
 .cp-badge{font-size:0.95rem;color:var(--bg);background:var(--cyan);padding:5px 14px;letter-spacing:0.08em;font-weight:bold;}
 .cp-encoded{background:rgba(0,229,255,0.04);border:1px solid rgba(0,229,255,0.2);padding:0.8rem;font-size:clamp(1.3rem,2.8vw,1.9rem);color:var(--cyan);text-align:center;letter-spacing:0.25em;direction:ltr;line-height:1.8;}
@@ -102,11 +91,6 @@ body::after{content:'';position:fixed;inset:0;pointer-events:none;z-index:9999;b
 .ct-row--atbash .ct-cell.odd{color:rgba(0,255,170,0.96);background:rgba(0,255,170,0.1);}
 .ct-row--atbash .ct-cell.even{color:rgba(255,104,138,0.98);background:rgba(255,104,138,0.1);}
 
-#log-strip{display:flex;flex-direction:column-reverse;overflow:hidden;height:100px;background:rgba(2,6,9,0.7);border-top:1px solid rgba(0,229,255,0.08);padding:0.6rem 0.8rem;gap:4px;font-size:0.9rem;}
-.ll{color:rgba(0,229,255,0.35);} .ll.sys{color:var(--gold);} .ll.ok{color:var(--green);} .ll.dmg{color:var(--red);}
-#log-strip.flash-ok{border-top-color:rgba(0,255,136,0.45);box-shadow:inset 0 0 0 1px rgba(0,255,136,0.12),0 0 18px rgba(0,255,136,0.14);}
-#log-strip.flash-gold{border-top-color:rgba(255,192,64,0.48);box-shadow:inset 0 0 0 1px rgba(255,192,64,0.12),0 0 18px rgba(255,192,64,0.16);}
-
 #s-over,#s-win{position:fixed;inset:0;display:none;flex-direction:column;align-items:center;justify-content:center;z-index:200;background:rgba(2,6,9,0.97);}
 .end-title{font-family:'Tajawal',sans-serif;font-size:clamp(2rem,7vw,3.8rem);font-weight:900;margin-bottom:1rem;}
 .end-title.dead{color:var(--red);text-shadow:0 0 30px rgba(255,34,85,0.5);}
@@ -115,7 +99,7 @@ body::after{content:'';position:fixed;inset:0;pointer-events:none;z-index:9999;b
 .result-box span{color:var(--cyan);}
 
 
-/* 3. Puzzle, battle, modal UI */
+/* Battle, status, and modal overlays. */
 #battle-screen{
   position:fixed;inset:0;display:none;align-items:center;justify-content:center;z-index:180;
   background:rgba(0,0,0,0.72);backdrop-filter:blur(3px);
@@ -240,7 +224,7 @@ body::after{content:'';position:fixed;inset:0;pointer-events:none;z-index:9999;b
 .room-brief-text{margin-top:0.3rem;color:var(--text);line-height:1.75;}
 
 
-/* 4. Tutorial, travel, explanation UI */
+/* Travel, tutorial, and explanation surfaces. */
 #room-travel{
   position:fixed;inset:0;display:none;align-items:center;justify-content:center;z-index:220;
   background:rgba(2,6,9,0.94);opacity:0;transition:opacity 0.18s ease;
@@ -309,12 +293,11 @@ body::after{content:'';position:fixed;inset:0;pointer-events:none;z-index:9999;b
 
 
 
-/* Utility classes replacing one-off inline styles */
+/* Reusable utility classes. */
 .hud-pill--stack{position:relative;flex-direction:column;gap:2px;justify-content:center;}
 .hud-pill--push{margin-right:auto;}
 .hval--compact{font-size:0.88rem;}
 .hp-fill--full{width:100%;}
-.mini-label{display:block;font-size:0.68rem;margin-bottom:4px;color:rgba(0,229,255,0.4);text-align:center;}
 .btn--right{width:min(260px,100%);align-self:flex-end;}
 .btn--end{width:240px;}
 .cp-hint--meta{font-size:0.82rem;color:rgba(0,229,255,0.72);direction:ltr;}
@@ -325,11 +308,7 @@ body::after{content:'';position:fixed;inset:0;pointer-events:none;z-index:9999;b
   .hud-bot{width:min(168px,54vw);right:8px;}
 }
 
-/* =========================================================
-   Mobile-fit layer for the original 3D game
-   - keeps the base Three.js game intact
-   - adds phone-safe HUD, controls, and modal sizing
-   ========================================================= */
+/* Mobile layout, touch controls, and compact modal sizing. */
 html, body{
   overscroll-behavior:none;
   -webkit-text-size-adjust:100%;
@@ -354,39 +333,34 @@ body.mobile-fit .explain-card{
 @media (max-width: 980px), (pointer: coarse){
   body{font-size:16px;}
   #mobile-controls{
-    position:fixed;
-    top:calc(112px + env(safe-area-inset-top));
-    left:max(8px, env(safe-area-inset-left));
-    right:auto;
-    bottom:auto;
-    z-index:170;
+    position:static;
     display:none;
-    align-items:flex-start;
-    justify-content:flex-start;
-    gap:10px;
+    align-items:stretch;
+    justify-content:stretch;
+    align-self:stretch;
     padding:0;
     pointer-events:none;
     direction:rtl;
+    min-width:0;
   }
   #mobile-controls.visible{display:flex;}
-  .mobile-actions{pointer-events:none;display:flex;gap:8px;flex-direction:row;align-items:flex-start;}
+  .mobile-actions{pointer-events:none;display:flex;gap:4px;flex-direction:row;align-items:stretch;width:100%;}
   .mobile-btn{
     pointer-events:auto;
-    width:auto;
-    min-width:82px;
-    height:42px;
-    padding:0 0.9rem;
-    border:1px solid rgba(0,229,255,0.4);
-    border-radius:14px;
-    background:rgba(2,10,16,0.78);
+    flex:1 1 0;
+    min-width:48px;
+    height:auto;
+    min-height:34px;
+    padding:0 0.42rem;
+    border:1px solid rgba(0,229,255,0.22);
+    border-radius:10px;
+    background:rgba(0,229,255,0.07);
     color:var(--cyan);
     font-family:var(--mono);
-    font-size:0.84rem;
+    font-size:0.72rem;
     font-weight:800;
-    letter-spacing:0.04em;
-    box-shadow:0 0 16px rgba(0,229,255,0.15), inset 0 0 0 1px rgba(255,255,255,0.04);
-    backdrop-filter:blur(8px);
-    -webkit-backdrop-filter:blur(8px);
+    letter-spacing:0;
+    box-shadow:none;
     touch-action:manipulation;
     user-select:none;
     -webkit-user-select:none;
@@ -397,17 +371,19 @@ body.mobile-fit .explain-card{
     border-color:rgba(0,229,255,0.9);
   }
   .mobile-action,
-  .mobile-pause{width:auto;font-size:0.82rem;}
+  .mobile-pause{width:auto;font-size:0.72rem;}
 
   .hud-top{
     min-height:0;
     display:grid;
-    grid-template-columns:repeat(2,minmax(0,1fr));
+    grid-template-columns:minmax(52px,0.62fr) minmax(78px,1fr) minmax(50px,0.56fr) minmax(104px,max-content);
     gap:4px;
     padding:calc(6px + env(safe-area-inset-top)) 6px 6px;
     background:linear-gradient(180deg,rgba(2,6,9,0.96),rgba(2,6,9,0.72));
   }
-  .hud-pill--key{grid-column:1 / -1;}
+  .hud-pill--key{grid-column:1 / -1;grid-row:2;}
+  .hud-pill--push{grid-column:3;grid-row:1;margin-right:0;}
+  #mobile-controls{grid-column:4;grid-row:1;}
   .hud-pill{
     min-width:0;
     border-left:0;
@@ -417,7 +393,6 @@ body.mobile-fit .explain-card{
     border:1px solid rgba(0,229,255,0.08);
     border-radius:10px;
   }
-  .hud-pill--push{margin-right:0;}
   .hlabel{font-size:0.58rem;letter-spacing:0.03em;white-space:nowrap;}
   .hval{font-size:0.86rem;line-height:1.2;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
   .hval--compact{font-size:0.78rem;}
@@ -425,7 +400,7 @@ body.mobile-fit .explain-card{
   .hp-wrap{width:100%;height:9px;}
   .hud-control-btn{display:none;}
   .hud-bot{
-    top:calc(120px + env(safe-area-inset-top));
+    top:calc(112px + env(safe-area-inset-top));
     right:max(8px, env(safe-area-inset-right));
     width:118px;
     max-height:none;
@@ -433,10 +408,9 @@ body.mobile-fit .explain-card{
     opacity:0.94;
   }
   #minimap-wrap{padding:0.42rem;}
-  #minimap{width:108px;height:108px;}
+  #minimap{width:100%;height:auto;}
 
   .title-main{font-size:clamp(2.05rem,10vw,4.2rem);}
-  .title-sub{font-size:0.75rem;margin-bottom:1rem;}
   .title-story{max-width:88vw;font-size:0.92rem;line-height:1.75;margin-bottom:1.1rem;}
   .menu{width:min(320px,88vw);}
   .mbtn{min-height:48px;padding:0.78rem 0.9rem;}
@@ -494,24 +468,24 @@ body.mobile-fit .explain-card{
 }
 
 @media (max-width: 760px) and (orientation: portrait){
-  #mobile-controls{top:calc(116px + env(safe-area-inset-top));}
-  .hud-top{grid-template-columns:1fr 1fr;}
-  .hud-bot{top:calc(120px + env(safe-area-inset-top));width:112px;}
-  #minimap{width:102px;height:102px;}
-  .mobile-btn{min-width:78px;height:40px;border-radius:13px;padding:0 0.8rem;}
+  .hud-top{grid-template-columns:minmax(50px,0.6fr) minmax(76px,1fr) minmax(48px,0.55fr) minmax(104px,max-content);}
+  .hud-bot{top:calc(112px + env(safe-area-inset-top));width:112px;}
+  #minimap{width:100%;height:auto;}
+  .mobile-btn{min-width:48px;min-height:34px;border-radius:10px;padding:0 0.38rem;}
 }
 
 @media (max-height: 520px) and (orientation: landscape){
-  .hud-top{grid-template-columns:repeat(6,minmax(0,1fr));padding:calc(4px + env(safe-area-inset-top)) 6px 4px;}
+  .hud-top{grid-template-columns:minmax(52px,0.68fr) minmax(74px,0.9fr) minmax(128px,1.2fr) minmax(50px,0.55fr) minmax(104px,max-content);padding:calc(4px + env(safe-area-inset-top)) 6px 4px;}
   .hud-pill--key{grid-column:auto;}
+  .hud-pill--push{grid-column:auto;grid-row:auto;}
+  #mobile-controls{grid-column:auto;grid-row:auto;}
   .hud-pill{padding:4px 6px;}
   .hlabel{font-size:0.52rem;}
   .hval{font-size:0.76rem;}
   .hp-wrap{height:7px;}
   .hp-float{min-height:10px;font-size:0.56rem;}
   .hud-bot{top:calc(48px + env(safe-area-inset-top));width:104px;}
-  #minimap{width:86px;height:86px;}
-  #mobile-controls{top:calc(58px + env(safe-area-inset-top));}
-  .mobile-btn{min-width:70px;height:36px;border-radius:12px;padding:0 0.7rem;}
+  #minimap{width:100%;height:auto;}
+  .mobile-btn{min-width:48px;min-height:30px;border-radius:9px;padding:0 0.36rem;}
   .mobile-action,.mobile-pause{font-size:0.74rem;}
 }

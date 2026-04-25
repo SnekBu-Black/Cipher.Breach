@@ -1,15 +1,4 @@
-/*
-  CIPHER.BREACH — game logic
-  File map:
-  1. Config, room data, themes
-  2. Runtime state and helpers
-  3. Three.js scene/builders
-  4. Cipher generation and battle UI
-  5. Movement, daemon AI, room flow
-  6. Input, HUD, matrix rain bootstrapping
-*/
 
-// ----- Core configuration and tuning knobs -----
 const GS = 9, SP = 1.25;
 const FREE='free', GOAL='goal', START='start', WALL='wall';
 const ROOM_COUNT = 6;
@@ -28,7 +17,6 @@ const ROOM_CLEAR_BEAT_MS = 520;
 const ROOM_TRAVEL_MS = 1100;
 const ROOM_DAEMONS = [2,2,3,3,4,4];
 
-// ----- Data-driven rooms, puzzles, and visual themes -----
 const ROOM_PUZZLES = [
   {
     roomTitle:'الغرفة 1 // Cipher Relay',
@@ -124,7 +112,6 @@ const ROOM_PUZZLES = [
     referenceType:'columnar'
   }
 ];
-// Each theme drives floor colors, lights, particles, and travel-transition tinting.
 const ROOM_THEMES = [
   {
     label:'Relay Atrium',
@@ -335,7 +322,6 @@ const ROOM_COVER_PROFILES = [
   {targetPieces:5, zoneOrder:[3,5,4,3,5,1]}
 ];
 
-// Patrol routes are still data-driven so each room can rebalance movement without touching AI code.
 const ROOM_PATROLS = [
   [
     [{x:8,z:0},{x:8,z:1},{x:8,z:2},{x:7,z:2},{x:6,z:2},{x:6,z:1},{x:6,z:0},{x:7,z:0}],
@@ -371,7 +357,6 @@ const ROOM_PATROLS = [
     [{x:6,z:7},{x:7,z:6},{x:8,z:5},{x:7,z:4},{x:6,z:3},{x:5,z:4},{x:4,z:5},{x:5,z:6}]
   ]
 ];
-// Personality weights keep rook/bishop behavior varied without branching the whole AI system.
 const DAEMON_PERSONALITIES = {
   default:{holdChance:0.12, patrolFlipChance:0.22, alertTurns:3, commitTurns:3, threatBonus:0, bestWeight:5.2, secondWeight:3.15, thirdWeight:1.6, candidateDepth:2},
   sentry:{holdChance:0.2, patrolFlipChance:0.14, alertTurns:4, commitTurns:4, threatBonus:0.35, bestWeight:6.3, secondWeight:2.6, thirdWeight:1.1, candidateDepth:1},
@@ -389,7 +374,6 @@ const ROOM_DAEMON_PLANS = [
   [{type:'rook',personality:'hunter'},{type:'bishop',personality:'flanker'},{type:'rook',personality:'sentry'},{type:'bishop',personality:'hunter'}]
 ];
 
-// ----- Runtime state containers -----
 let scene, camera, renderer;
 let heroGroup, daemonGroups = [];
 let nodeMeshes = [], nodeLights = [];
@@ -419,8 +403,8 @@ const ROOM_STORY_BEATS = [
 let currentTheme = ROOM_THEMES[0];
 let sceneLights = {ambient:null, sun:null, rim:null, fill:null};
 let VIEW = {w:window.innerWidth, h:window.innerHeight, mobile:false, phone:false, portrait:false};
+let renderViewportCache = {w:0, h:0, dpr:0, mobile:null};
 
-// Mobile-fit profile for the original 3D scene. This changes framing/performance, not gameplay.
 function getViewportSize(){
   const vv = window.visualViewport;
   return {
@@ -453,17 +437,32 @@ function getCameraProfile(){
   return {fov:50, x:10.2, y:10.2, z:10.2, lerp:0.08};
 }
 
-function applyRendererViewport(){
+function getRenderDpr(){
+  const raw = window.devicePixelRatio || 1;
+  const cap = VIEW.mobile ? 2 : 2.5;
+  return Math.max(1, Math.min(raw, cap));
+}
+
+function applyRendererViewport(force=false){
   if(!camera || !renderer) return;
   const profile = getCameraProfile();
+  const dpr = getRenderDpr();
+  const changed = force ||
+    renderViewportCache.w !== VIEW.w ||
+    renderViewportCache.h !== VIEW.h ||
+    renderViewportCache.dpr !== dpr ||
+    renderViewportCache.mobile !== VIEW.mobile;
+  if(!changed) return;
   camera.fov = profile.fov;
   camera.aspect = VIEW.w / VIEW.h;
   camera.updateProjectionMatrix();
-  renderer.setPixelRatio(VIEW.mobile ? Math.min(window.devicePixelRatio || 1, 1.25) : Math.min(window.devicePixelRatio || 1, 2));
-  renderer.setSize(VIEW.w, VIEW.h);
+  renderer.setPixelRatio(dpr);
+  renderer.setSize(VIEW.w, VIEW.h, true);
+  renderViewportCache = {w:VIEW.w, h:VIEW.h, dpr, mobile:VIEW.mobile};
+  refreshMatrixRain();
+  if(G?.nodes?.length) updateMinimap();
 }
 
-// ----- Shared helpers for DOM updates and state resets -----
 const $ = id => document.getElementById(id);
 const pick = arr => arr[Math.floor(Math.random()*arr.length)];
 const shuffle = a => { for(let i=a.length-1;i>0;i--){const j=~~(Math.random()*(i+1)); [a[i],a[j]]=[a[j],a[i]];} return a; };
@@ -1989,7 +1988,6 @@ function buildRoomWalls(room){
   return walls;
 }
 
-// ----- Scene builders and rendering -----
 function V(w,h,d,col,emCol=0,emI=0){
   const m = new THREE.Mesh(new THREE.BoxGeometry(w,h,d), new THREE.MeshLambertMaterial({color:col,emissive:emCol,emissiveIntensity:emI}));
   m.castShadow=true; m.receiveShadow=true; return m;
@@ -2074,7 +2072,6 @@ function buildGridVisuals(nodes){
 
 function buildHeroMesh(){
   const g=new THREE.Group();
-// The runner is a compact relay courier: hooded shell, chest relay, and a small spine antenna.
   const bootL=V(0.12,0.18,0.15,0x0b1826,0x00a6c0,0.08); bootL.position.set(-0.08,0.09,0.01); g.add(bootL);
   const bootR=V(0.12,0.18,0.15,0x0b1826,0x00a6c0,0.08); bootR.position.set(0.08,0.09,0.01); g.add(bootR);
 
@@ -2107,58 +2104,36 @@ function buildHeroMesh(){
 function buildDaemonMesh(type='rook'){
   const g=new THREE.Group();
   if(type==='rook'){
-    // ── ROOK: squat castle-tower silhouette ──
-    // Base plinth
     const base=V(0.56,0.1,0.56,0x4a2e00,0xffc040,0.3); base.position.set(0,0.05,0); g.add(base);
-    // Thick barrel body
     const body=V(0.46,0.5,0.46,0x3a2200,0xffc040,0.2); body.position.set(0,0.35,0); g.add(body);
-    // Body armour band
     const band=V(0.5,0.08,0.5,0x6a3c00,0xffc040,0.5); band.position.set(0,0.44,0); g.add(band);
-    // Neck
     const neck=V(0.3,0.1,0.3,0x4a2e00); neck.position.set(0,0.65,0); g.add(neck);
-    // Wide flat head / parapet base
     const head=V(0.52,0.16,0.52,0x5a3800,0xffc040,0.35); head.position.set(0,0.78,0); g.add(head);
-    // Red eye visor slit
     const vis=V(0.32,0.06,0.54,0xff2255,0xff2255,0.9); vis.position.set(0,0.8,0); g.add(vis);
-    // Battlements — 4 corner merlons
     const mPos=[[-0.17,-0.17],[0.17,-0.17],[-0.17,0.17],[0.17,0.17]];
     mPos.forEach(([mx,mz])=>{
       const m=V(0.14,0.2,0.14,0x6a3c00,0xffc040,0.4); m.position.set(mx,0.97,mz); g.add(m);
     });
-    // Center merlon
     const cm=V(0.1,0.15,0.1,0x7a4800,0xffc040,0.5); cm.position.set(0,0.95,0); g.add(cm);
-    // Gold glow core inside battlements
     const core=V(0.12,0.08,0.12,0xffc040,0xffc040,1); core.position.set(0,0.91,0); g.add(core);
-    // Floor sigil — thick gold square ring
     const sigil=new THREE.Mesh(new THREE.RingGeometry(0.3,0.38,4),new THREE.MeshBasicMaterial({color:0xffc040,side:THREE.DoubleSide}));
     sigil.rotation.x=-Math.PI/2; sigil.rotation.z=Math.PI/4; sigil.position.y=0.04; g.add(sigil);
   } else {
-    // ── BISHOP: tall slim mitre/spire silhouette ──
-    // Narrow base feet
     const fL=V(0.1,0.14,0.1,0x003a50); fL.position.set(-0.07,0.07,0); g.add(fL);
     const fR=V(0.1,0.14,0.1,0x003a50); fR.position.set(0.07,0.07,0); g.add(fR);
-    // Slim robe body — tapers upward
     const robe=V(0.3,0.48,0.24,0x002a3e,0x00e5ff,0.18); robe.position.set(0,0.38,0); g.add(robe);
     const robeTop=V(0.22,0.24,0.18,0x002a3e,0x00e5ff,0.22); robeTop.position.set(0,0.68,0); g.add(robeTop);
-    // Collar
     const collar=V(0.28,0.06,0.22,0x00475f,0x00e5ff,0.4); collar.position.set(0,0.83,0); g.add(collar);
-    // Narrow head
     const head=V(0.2,0.2,0.18,0x003040,0x00e5ff,0.2); head.position.set(0,0.98,0); g.add(head);
-    // Red eye pair
     const eL=V(0.07,0.05,0.19,0xff2255,0xff2255,1); eL.position.set(-0.05,0.99,0); g.add(eL);
     const eR=V(0.07,0.05,0.19,0xff2255,0xff2255,1); eR.position.set(0.05,0.99,0); g.add(eR);
-    // Tall mitre hat — distinctive stacked spire
     const hat1=V(0.18,0.22,0.16,0x004060,0x00e5ff,0.5); hat1.position.set(0,1.2,0); g.add(hat1);
     const hat2=V(0.12,0.22,0.1,0x005070,0x00e5ff,0.7); hat2.position.set(0,1.46,0); g.add(hat2);
     const hat3=V(0.07,0.2,0.06,0x006080,0x00e5ff,0.9); hat3.position.set(0,1.7,0); g.add(hat3);
-    // Glowing tip orb
     const tip=V(0.08,0.08,0.08,0x00e5ff,0x00e5ff,1); tip.position.set(0,1.86,0); g.add(tip);
-    // Mitre front notch (the characteristic bishop cleft)
     const notch=V(0.06,0.12,0.17,0x001820,0x00e5ff,0.1); notch.position.set(0,1.2,0); g.add(notch);
-    // Diagonal cross-sash on robe
     const sashA=V(0.04,0.42,0.04,0x00607a,0x00e5ff,0.6); sashA.position.set(-0.09,0.5,0); sashA.rotation.z=0.4; g.add(sashA);
     const sashB=V(0.04,0.42,0.04,0x00607a,0x00e5ff,0.6); sashB.position.set(0.09,0.5,0); sashB.rotation.z=-0.4; g.add(sashB);
-    // Floor sigil — cyan diamond ring (rotated 45°)
     const sigil=new THREE.Mesh(new THREE.RingGeometry(0.3,0.38,4),new THREE.MeshBasicMaterial({color:0x00e5ff,side:THREE.DoubleSide}));
     sigil.rotation.x=-Math.PI/2; sigil.position.y=0.04; g.add(sigil);
   }
@@ -2506,6 +2481,7 @@ function tweenDaemon(dm,toX,toZ){
 
 function renderLoop(){
   requestAnimationFrame(renderLoop);
+  applyRendererViewport();
   const t=Date.now()*0.001;
   if(lerpHero.active){
     lerpHero.t=Math.min(1,lerpHero.t+0.12);
@@ -2707,7 +2683,6 @@ function renderLoop(){
   });
   floatParticles.forEach(p=>{ p.position.y=p.userData.baseY+Math.sin(t*p.userData.speed+p.userData.phase)*0.1; });
 
-  // Camera follow with soft interpolation
   if(heroGroup){
     FX.cameraKick*=0.86;
     const kickWave=Math.sin(t*42)*FX.cameraKick;
@@ -2736,7 +2711,6 @@ function renderLoop(){
   renderer.render(scene,camera);
 }
 
-// ----- Cipher helpers, puzzle generation, and hint/reference builders -----
 function caesarEnc(w,s){return w.split('').map(c=>String.fromCharCode(((c.charCodeAt(0)-65+s)%26)+65)).join('');}
 function atbash(w){return w.split('').map(c=>String.fromCharCode(90-(c.charCodeAt(0)-65))).join('');}
 function railFenceEnc(w){
@@ -3231,7 +3205,6 @@ function pickSpawnPointForRoute(route){
   return best;
 }
 
-// ----- Board generation, daemon spawning, and pursuit rules -----
 function initDaemons(room){
   daemonGroups.forEach(d=>{if(d.mesh) scene.remove(d.mesh);});
   daemonGroups=[]; daemonLerps=[];
@@ -3528,7 +3501,6 @@ function buildRailFenceReference(){
 }
 
 function showPuzzlePanel(){
-  // The exploration HUD stays intentionally minimal; puzzle details appear in the battle overlay.
 }
 
 function getPuzzleTimeLimit(puzzle){
@@ -3773,7 +3745,6 @@ function openBattle(daemon){
   startBattleTimer();
 }
 
-// ----- Battle overlay rendering and puzzle resolution -----
 function renderBattlePanel(){
   const p=battle.puzzle;
   const bossMode = battle.mode==='boss' && battle.boss;
@@ -4177,8 +4148,6 @@ function choosePatrolTarget(dm, occupied){
     return target;
   }
 
-  // If the direct route step is blocked, take a simple local detour toward
-  // the nearest route waypoint instead of freezing in place.
   const scoreMove = (move, routeIdx)=>{
     const target = dm.route[routeIdx];
     if(!target) return Infinity;
@@ -4395,7 +4364,6 @@ function heroTakeDamage(dmg, opts={}){
   if(G.hero.hp<=0 && !opts.deferGameOver) setTimeout(gameOver,400);
 }
 
-// ----- Session lifecycle: room flow, victory, defeat, and boot -----
 function roomClear(){
   if(G.roomClearing) return;
   G.roomClearing=true;
@@ -4457,7 +4425,14 @@ function updateHud(){
 
 function updateMinimap(){
   const cv=document.getElementById('minimap'), ctx=cv.getContext('2d');
-  const cs=28; cv.width=GS*cs; cv.height=GS*cs;
+  if(!G?.nodes?.length) return;
+  const rect=cv.getBoundingClientRect();
+  const dpr=getRenderDpr();
+  const cssSize=Math.max(96, Math.round(Math.min(rect.width || 140, rect.height || rect.width || 140)));
+  const pxSize=Math.max(GS, Math.round(cssSize*dpr));
+  if(cv.width!==pxSize) cv.width=pxSize;
+  if(cv.height!==pxSize) cv.height=pxSize;
+  const cs=pxSize/GS;
   ctx.fillStyle='#020609'; ctx.fillRect(0,0,cv.width,cv.height);
   G.nodes.forEach(n=>{
     let c='#0a2520';
@@ -4719,7 +4694,6 @@ function setupMobileControls(){
 setupMobileControls();
 setupSwipeControls();
 
-// Optional PWA cache registration for GitHub Pages / HTTPS hosting.
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', () => {
     navigator.serviceWorker.register('./sw.js').catch(err => console.warn('SW registration failed:', err));
@@ -4727,8 +4701,6 @@ if ('serviceWorker' in navigator) {
 }
 
 
-// Keyboard and mobile controls now share the same movement mapping.
-// Left is dx=-1 and right is dx=+1. This avoids RTL layout flipping the controls.
 document.addEventListener('keydown',e=>{
   if(!isFlexVisible('hud')) return;
   if(isTextEntryContext(e.target)) return;
@@ -4777,14 +4749,22 @@ function initMatrixRain(canvasId, options={}){
     size:options.size || 14,
     fade:options.fade || 0.06,
     color:options.color || '#00e5ff',
+    width:1,
+    height:1,
+    dpr:1,
     drops:[]
   };
   state.resize=()=>{
     const rect=cv.getBoundingClientRect();
     const width=Math.max(1, Math.round(rect.width || cv.clientWidth || window.innerWidth));
     const height=Math.max(1, Math.round(rect.height || cv.clientHeight || window.innerHeight));
-    cv.width=width;
-    cv.height=height;
+    const dpr=Math.max(1, Math.min(window.devicePixelRatio || 1, 2));
+    state.width=width;
+    state.height=height;
+    state.dpr=dpr;
+    cv.width=Math.round(width*dpr);
+    cv.height=Math.round(height*dpr);
+    ctx.setTransform(dpr,0,0,dpr,0,0);
     const cols=Math.max(1, Math.floor(width/state.size));
     state.drops=Array.from({length:cols},()=>1+Math.floor(Math.random()*Math.max(2, Math.floor(height/state.size))));
   };
@@ -4795,14 +4775,14 @@ function initMatrixRain(canvasId, options={}){
 
 function drawMatrixRain(state){
   if(!state) return;
-  const {canvas,ctx,size,fade,color}=state;
+  const {ctx,size,fade,color,width,height}=state;
   ctx.fillStyle=`rgba(2,6,9,${fade})`;
-  ctx.fillRect(0,0,canvas.width,canvas.height);
+  ctx.fillRect(0,0,width,height);
   ctx.fillStyle=color;
   ctx.font=`${Math.max(12,size-1)}px Share Tech Mono`;
   state.drops.forEach((drop,idx)=>{
     ctx.fillText(MATRIX_CHARS[~~(Math.random()*MATRIX_CHARS.length)], idx*size, drop*size);
-    if(drop*size>canvas.height&&Math.random()>0.975) state.drops[idx]=0;
+    if(drop*size>height&&Math.random()>0.975) state.drops[idx]=0;
     state.drops[idx]++;
   });
 }
@@ -4816,6 +4796,7 @@ function refreshMatrixRain(){
 }
 
 window.addEventListener('resize',refreshMatrixRain);
+window.visualViewport?.addEventListener('resize',refreshMatrixRain);
 initMatrixRain('rain',{size:14,fade:0.05,color:'#00e5ff'});
 initMatrixRain('travel-rain',{size:16,fade:0.08,color:'#00ff88'});
 setInterval(animateMatrixRain,55);
