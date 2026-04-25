@@ -76,7 +76,8 @@ body::after{content:'';position:fixed;inset:0;pointer-events:none;z-index:9999;b
 .cp-feedback.ok{color:var(--green);} .cp-feedback.bad{color:var(--red);} .cp-feedback.hint{color:var(--gold);}
 
 .caesar-table{background:rgba(0,229,255,0.03);border:1px solid rgba(0,229,255,0.15);padding:0.65rem 0.75rem;overflow-x:auto;}
-.ct-row{display:flex;gap:3px;direction:ltr;justify-content:center;}
+.ct-row{display:flex;gap:3px;direction:ltr;justify-content:center;flex-wrap:nowrap;}
+.ct-row + .ct-row{margin-top:0.35rem;}
 .ct-cell{min-width:30px;width:30px;text-align:center;font-size:0.94rem;padding:5px 2px;border-radius:6px;}
 .ct-cell.odd{color:rgba(0,229,255,0.95);background:rgba(0,229,255,0.08);}
 .ct-cell.even{color:rgba(255,192,64,0.98);background:rgba(255,192,64,0.08);}
@@ -439,13 +440,27 @@ body.mobile-fit .explain-card{
   .battle-card{gap:0.55rem;}
   .battle-title{font-size:1.12rem;}
   .battle-sub{font-size:0.88rem;}
-  .cp-encoded{font-size:1.08rem;letter-spacing:0.12em;padding:0.65rem;line-height:1.55;}
+  .cp-encoded{font-size:clamp(1.14rem,4.8vw,1.34rem);letter-spacing:0.14em;padding:0.72rem 0.65rem;line-height:1.55;}
+  .cp-artifact-text{font-size:0.96rem;line-height:1.75;}
+  .explain-answer{font-size:clamp(1.34rem,5.6vw,1.64rem);}
   .cp-hint,.cp-feedback,.cp-brief,.explain-text,.modal-copy{font-size:0.88rem;line-height:1.65;}
   .cp-input{width:100%;font-size:1rem;min-height:46px;}
   .cp-action{flex-direction:column;gap:0.5rem;}
   .cp-btn{width:100%;min-height:48px;}
-  .caesar-table{padding:0.45rem;}
-  .ct-cell{min-width:24px;width:24px;font-size:0.78rem;padding:4px 1px;}
+  .caesar-table{padding:0.55rem;overflow-x:visible;}
+  .ct-row{
+    display:grid;
+    grid-template-columns:repeat(13,minmax(0,1fr));
+    gap:4px;
+    justify-content:stretch;
+  }
+  .ct-cell{
+    min-width:0;
+    width:auto;
+    font-size:0.9rem;
+    padding:0.45rem 0;
+    border-radius:7px;
+  }
   .cipher-grid-table{font-size:0.78rem;}
   .cipher-grid-table th,
   .cipher-grid-table td{padding:0.32rem 0.22rem;}
