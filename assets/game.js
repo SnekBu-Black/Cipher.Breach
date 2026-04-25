@@ -447,9 +447,9 @@ function refreshViewportProfile(){
 
 function getCameraProfile(){
   refreshViewportProfile();
-  if(VIEW.phone && VIEW.portrait) return {fov:68, x:7.7, y:13.6, z:9.2, lerp:0.1};
-  if(VIEW.phone) return {fov:60, x:8.5, y:11.1, z:8.8, lerp:0.1};
-  if(VIEW.mobile) return {fov:56, x:9.2, y:10.8, z:9.2, lerp:0.09};
+  if(VIEW.phone && VIEW.portrait) return {fov:76, x:8.8, y:15.2, z:10.5, lerp:0.1};
+  if(VIEW.phone) return {fov:64, x:9.4, y:12.1, z:9.7, lerp:0.1};
+  if(VIEW.mobile) return {fov:60, x:9.8, y:11.6, z:9.8, lerp:0.09};
   return {fov:50, x:10.2, y:10.2, z:10.2, lerp:0.08};
 }
 
@@ -3634,7 +3634,6 @@ function setupBossChamber(){
   heroGroup.position.set(wp.x,0,wp.z);
   camFollow.x=wp.x;
   camFollow.z=wp.z;
-  document.getElementById('h-node').textContent=formatNodeCoord(G.hero.x,G.hero.z);
   updateNodeHighlight();
   updateMinimap();
   updateHud();
@@ -3996,7 +3995,7 @@ function submitBattle(){
     if(hadKey){
       G.keyCollected=true;
       activateExtractionState();
-      document.getElementById('h-key').textContent='تم الاستحواذ';
+      updateHud();
       log(`// تم تأمين مفتاح الخروج من ${getKeyholderCallsign(G.layer)}: توجّه إلى عقدة الخروج`,'ok');
     }
     clearInterval(battle.timer);
@@ -4241,7 +4240,6 @@ function tryMove(nx,nz){
   if(!tNode||tNode.state===WALL) return;
   G.hero.x=nx; G.hero.z=nz;
   G.turns++; updateHud();
-  document.getElementById('h-node').textContent=formatNodeCoord(nx,nz);
   tweenHero(nx,nz,()=>{
     updateNodeHighlight();
     onHeroArrive();
@@ -4449,14 +4447,12 @@ function setupRoom(options={}){
 }
 
 function updateHud(){
-  document.getElementById('h-room').textContent=formatRoomCounter(G.layer);
-  document.getElementById('h-turns').textContent=String(G.turns);
-  document.getElementById('h-key').textContent=isTutorialMode()
-    ? 'معرض تدريبي'
-    : bossSceneState.active
-      ? 'قاعة العرش'
-      : (G.keyCollected?'تم الاستحواذ':'لم يتم الاستحواذ');
-  document.getElementById('h-daemons').textContent=String(bossSceneState.active ? 1 : daemonGroups.length);
+  setText('h-room', formatRoomCounter(G.layer));
+  setText('h-turns', String(G.turns));
+  const keyPill=$('key-hud-pill');
+  const keyVisible=!isTutorialMode() && !bossSceneState.active && !G.keyCollected;
+  if(keyPill) keyPill.hidden=!keyVisible;
+  setText('h-key', keyVisible ? 'ابحث عن حامل المفتاح' : '');
 }
 
 function updateMinimap(){
@@ -4570,7 +4566,6 @@ function startSession(mode=MODE_RUN){
   heroGroup=buildHeroMesh(); scene.add(heroGroup);
   setDisplay('hud','flex');
   setText('h-room', formatRoomCounter(1));
-  setText('h-node', formatNodeCoord(0,8));
   hideDisplays(['battle-screen','s-explain']);
   hideTutorialChat();
   updateHeroVitals();

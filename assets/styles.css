@@ -34,6 +34,11 @@ body::after{content:'';position:fixed;inset:0;pointer-events:none;z-index:9999;b
 #hud{position:fixed;inset:0;display:none;pointer-events:none;z-index:50;flex-direction:column;}
 .hud-top{display:flex;align-items:stretch;background:rgba(2,6,9,0.88);border-bottom:1px solid rgba(0,229,255,0.15);backdrop-filter:blur(4px);pointer-events:all;padding:0 0.4rem;}
 .hud-pill{display:flex;align-items:center;gap:0.5rem;padding:0.95rem 1.2rem;border-left:1px solid rgba(0,229,255,0.1);}
+.hud-pill[hidden]{display:none!important;}
+.hud-pill.hud-pill--key{
+  border-color:rgba(255,192,64,0.2);
+  background:rgba(255,192,64,0.035);
+}
 .hud-control-btn{
   margin-right:0.55rem; align-self:center;
   padding:0.68rem 0.92rem; min-width:132px;
@@ -350,7 +355,7 @@ body.mobile-fit .explain-card{
   body{font-size:16px;}
   #mobile-controls{
     position:fixed;
-    top:calc(92px + env(safe-area-inset-top));
+    top:calc(112px + env(safe-area-inset-top));
     left:max(8px, env(safe-area-inset-left));
     right:auto;
     bottom:auto;
@@ -397,11 +402,12 @@ body.mobile-fit .explain-card{
   .hud-top{
     min-height:0;
     display:grid;
-    grid-template-columns:repeat(3,minmax(0,1fr));
+    grid-template-columns:repeat(2,minmax(0,1fr));
     gap:4px;
     padding:calc(6px + env(safe-area-inset-top)) 6px 6px;
     background:linear-gradient(180deg,rgba(2,6,9,0.96),rgba(2,6,9,0.72));
   }
+  .hud-pill--key{grid-column:1 / -1;}
   .hud-pill{
     min-width:0;
     border-left:0;
@@ -488,8 +494,8 @@ body.mobile-fit .explain-card{
 }
 
 @media (max-width: 760px) and (orientation: portrait){
-  #mobile-controls{top:calc(92px + env(safe-area-inset-top));}
-  .hud-top{grid-template-columns:1fr 1fr 1fr;}
+  #mobile-controls{top:calc(116px + env(safe-area-inset-top));}
+  .hud-top{grid-template-columns:1fr 1fr;}
   .hud-bot{top:calc(120px + env(safe-area-inset-top));width:112px;}
   #minimap{width:102px;height:102px;}
   .mobile-btn{min-width:78px;height:40px;border-radius:13px;padding:0 0.8rem;}
@@ -497,6 +503,7 @@ body.mobile-fit .explain-card{
 
 @media (max-height: 520px) and (orientation: landscape){
   .hud-top{grid-template-columns:repeat(6,minmax(0,1fr));padding:calc(4px + env(safe-area-inset-top)) 6px 4px;}
+  .hud-pill--key{grid-column:auto;}
   .hud-pill{padding:4px 6px;}
   .hlabel{font-size:0.52rem;}
   .hval{font-size:0.76rem;}
@@ -504,7 +511,7 @@ body.mobile-fit .explain-card{
   .hp-float{min-height:10px;font-size:0.56rem;}
   .hud-bot{top:calc(48px + env(safe-area-inset-top));width:104px;}
   #minimap{width:86px;height:86px;}
-  #mobile-controls{top:calc(46px + env(safe-area-inset-top));}
+  #mobile-controls{top:calc(58px + env(safe-area-inset-top));}
   .mobile-btn{min-width:70px;height:36px;border-radius:12px;padding:0 0.7rem;}
   .mobile-action,.mobile-pause{font-size:0.74rem;}
 }
