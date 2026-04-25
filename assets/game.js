@@ -68,7 +68,7 @@ const ROOM_PUZZLES = [
     brief:'استخرج الدليل المخفي المرتبط بتخزين كلمات المرور.',
     prompt:'استخدم Atbash.',
     methodLabel:'Atbash',
-    wordPool:['SALT','HASH','PEPPER','VERIFY','SECRET','LOGIN','CREDS','PROOF','VAULT','SECURE','SHIELD','MEMORY','PHRASE','REHASH','BCRYPT','ARGONID','STRETCH','STORAGE','DEFENSE','DIGEST'],
+    wordPool:['SALT','HASH','PEPPER','VERIFY','SECRET','LOGIN','CREDS','PROOF','VAULT','SECURE','SHIELD','MEMORY','PHRASE','REHASH','PASSCODE','HARDEN','STRETCH','STORAGE','DEFENSE','DIGEST'],
     displayStyle:'code',
     guide:'Atbash يعكس الأبجدية: A مع Z، وB مع Y، وهكذا.',
     hintCategory:'مرتبطة بكلمات المرور أو التحقق من الهوية',
@@ -249,22 +249,22 @@ const TUTORIAL_THEME = {
   decor:'tutorial'
 };
 const TUTORIAL_PUZZLE = {
-  roomTitle:'التمهيد // Cipher Gallery',
+  roomTitle:'التمهيد // معرض الشيفرات',
   domain:'Orientation',
   cipherType:'caesar',
-  brief:'معرض آمن لتجريب الواجهات وفهم أساليب الشيفرة الستة.',
-  prompt:'اختر أي منصة تدريب.',
-  methodLabel:'Cipher Gallery',
+  brief:'هذا المعرض الهادئ يعرّفك على الشيفرات الست واحدة واحدة من دون قتال أو ضغط.',
+  prompt:'اختر التدريب الذي تريد تجربته وابدأ على راحتك.',
+  methodLabel:'معرض الشيفرات',
   wordPool:['KEY','CODE','EXIT','GATE','CIPHER','MATRIX','SIGNAL','SECRET'],
   displayStyle:'code',
   shiftOptions:[1,2],
-  guide:'قف فوق المنصة التي تريدها ثم افتح التمرين يدويًا.',
+  guide:'اقترب من أي رمز ثم اضغط E أو Enter عندما تكون جاهزًا.',
   hintCategory:'مرتبطة بالتعلّم والاستكشاف',
-  concept:'المعرض التعليمي يعرّفك على الفضاء واللافتات ومنصات التدريب من دون ضغط أو قتال.',
-  lesson:'إذا أنهيت هذه المحاكاة فأنت جاهز للمهمة الأساسية من دون أن تتفاجأ بطريقة اللعب أو أنماط الشيفرات.',
+  concept:'هنا تتعرف على شكل كل شيفرة وطريقة التفكير فيها قبل دخول الغرف الأساسية.',
+  lesson:'إذا أنهيت جولة في هذا المعرض، ستدخل المهمة الأساسية وأنت فاهم الحركة والواجهات وطريقة قراءة كل لغز.',
   referenceType:'caesar'
 };
-const TUTORIAL_STORY_BEAT = 'معرض تمهيدي آمن: اطلع على لوحات الديمونات، جرّب أي شيفرة من المنصات الست، ثم غادر عبر عقدة الخروج عندما تنتهي.';
+const TUTORIAL_STORY_BEAT = 'هذه مساحة آمنة لتتعرف على الديمونات وتجرب الشيفرات الست واحدة واحدة، ثم تغادر من عقدة الخروج عندما تنتهي.';
 const TUTORIAL_DAEMON_EXHIBITS = [
   {
     type:'rook',
@@ -308,14 +308,7 @@ const ROOM_DEBRIEF_NOTES = [
   'ممر الصلاحيات انفتح، وبدأت سجلات الوصول تتبع انسحاب الحارس.',
   'النافذة الأخيرة انكسرت، والعرش المركزي بات مكشوفًا.'
 ];
-const ROOM_KEYHOLDER_CALLSIGNS = [
-  'حامل المفتاح',
-  'CACHE JAILER',
-  'PRELATE HASH',
-  'ID MIRROR',
-  'حامل المفتاح',
-  'WINDOW REGENT'
-];
+const KEYHOLDER_CALLSIGN = 'حامل المفتاح';
 
 const COVER_SHAPES = [
   [{x:0,z:0},{x:1,z:0}],
@@ -346,36 +339,36 @@ const ROOM_COVER_PROFILES = [
 const ROOM_PATROLS = [
   [
     [{x:8,z:0},{x:8,z:1},{x:8,z:2},{x:7,z:2},{x:6,z:2},{x:6,z:1},{x:6,z:0},{x:7,z:0}],
-    [{x:3,z:8},{x:4,z:7},{x:3,z:6},{x:2,z:7}],
+    [{x:4,z:7},{x:5,z:6},{x:6,z:5},{x:5,z:4},{x:4,z:3},{x:3,z:4},{x:2,z:5},{x:3,z:6}],
     [{x:0,z:2},{x:1,z:2},{x:2,z:2},{x:2,z:1},{x:2,z:0},{x:1,z:0},{x:0,z:0},{x:0,z:1}]
   ],
   [
     [{x:8,z:0},{x:8,z:1},{x:8,z:2},{x:8,z:3},{x:7,z:3},{x:6,z:3},{x:6,z:2},{x:6,z:1},{x:6,z:0},{x:7,z:0}],
-    [{x:1,z:7},{x:2,z:6},{x:1,z:5},{x:0,z:6}],
+    [{x:3,z:7},{x:4,z:6},{x:5,z:5},{x:4,z:4},{x:3,z:3},{x:2,z:4},{x:1,z:5},{x:2,z:6}],
     [{x:4,z:0},{x:5,z:0},{x:6,z:0},{x:7,z:0},{x:7,z:1},{x:7,z:2},{x:6,z:2},{x:5,z:2},{x:4,z:2},{x:4,z:1}]
   ],
   [
     [{x:8,z:1},{x:8,z:2},{x:8,z:3},{x:7,z:3},{x:6,z:3},{x:5,z:3},{x:5,z:2},{x:5,z:1},{x:6,z:1},{x:7,z:1}],
-    [{x:1,z:6},{x:2,z:5},{x:1,z:4},{x:0,z:5}],
+    [{x:2,z:7},{x:3,z:6},{x:4,z:5},{x:3,z:4},{x:2,z:3},{x:1,z:4},{x:0,z:5},{x:1,z:6}],
     [{x:4,z:0},{x:5,z:0},{x:6,z:0},{x:7,z:0},{x:8,z:0},{x:8,z:1},{x:8,z:2},{x:7,z:2},{x:6,z:2},{x:5,z:2},{x:4,z:2},{x:4,z:1}]
   ],
   [
     [{x:8,z:0},{x:8,z:1},{x:8,z:2},{x:8,z:3},{x:7,z:3},{x:6,z:3},{x:6,z:2},{x:6,z:1},{x:6,z:0},{x:7,z:0}],
-    [{x:1,z:8},{x:2,z:7},{x:1,z:6},{x:0,z:7}],
+    [{x:4,z:8},{x:5,z:7},{x:6,z:6},{x:5,z:5},{x:4,z:4},{x:3,z:5},{x:2,z:6},{x:3,z:7}],
     [{x:4,z:0},{x:5,z:0},{x:6,z:0},{x:7,z:0},{x:7,z:1},{x:7,z:2},{x:6,z:2},{x:5,z:2},{x:4,z:2},{x:4,z:1}],
     [{x:3,z:8},{x:4,z:7},{x:3,z:6},{x:2,z:7}]
   ],
   [
     [{x:8,z:1},{x:8,z:2},{x:8,z:3},{x:7,z:3},{x:6,z:3},{x:6,z:2},{x:6,z:1},{x:7,z:1}],
-    [{x:1,z:7},{x:2,z:6},{x:1,z:5},{x:0,z:6}],
+    [{x:3,z:8},{x:4,z:7},{x:5,z:6},{x:4,z:5},{x:3,z:4},{x:2,z:5},{x:1,z:6},{x:2,z:7}],
     [{x:3,z:0},{x:4,z:0},{x:5,z:0},{x:6,z:0},{x:7,z:0},{x:7,z:1},{x:7,z:2},{x:6,z:2},{x:5,z:2},{x:4,z:2},{x:3,z:2},{x:3,z:1}],
-    [{x:7,z:7},{x:8,z:6},{x:7,z:5},{x:6,z:6}]
+    [{x:6,z:8},{x:7,z:7},{x:8,z:6},{x:7,z:5},{x:6,z:4},{x:5,z:5},{x:4,z:6},{x:5,z:7}]
   ],
   [
     [{x:8,z:0},{x:8,z:1},{x:8,z:2},{x:7,z:2},{x:6,z:2},{x:6,z:1},{x:6,z:0},{x:7,z:0}],
-    [{x:1,z:8},{x:2,z:7},{x:1,z:6},{x:0,z:7}],
+    [{x:4,z:8},{x:5,z:7},{x:6,z:6},{x:5,z:5},{x:4,z:4},{x:3,z:5},{x:2,z:6},{x:3,z:7}],
     [{x:3,z:0},{x:4,z:0},{x:5,z:0},{x:6,z:0},{x:7,z:0},{x:7,z:1},{x:7,z:2},{x:6,z:2},{x:5,z:2},{x:4,z:2},{x:3,z:2},{x:3,z:1}],
-    [{x:7,z:6},{x:8,z:5},{x:7,z:4},{x:6,z:5}]
+    [{x:6,z:7},{x:7,z:6},{x:8,z:5},{x:7,z:4},{x:6,z:3},{x:5,z:4},{x:4,z:5},{x:5,z:6}]
   ]
 ];
 // Personality weights keep rook/bishop behavior varied without branching the whole AI system.
@@ -405,13 +398,13 @@ let roomDecor = [];
 let lerpHero = {active:false, from:{x:0,y:0,z:0}, to:{x:0,y:0,z:0}, t:0};
 let daemonLerps = [];
 let G = {};
-let battle = {active:false, mode:null, daemonId:null, daemonType:null, keyCarrier:false, puzzle:null, timer:null, hintStep:0, timeLeft:0, boss:null, practice:null};
+let battle = {active:false, mode:null, daemonId:null, daemonType:null, keyCarrier:false, puzzle:null, timer:null, hintStep:0, hintRevealedIndices:[], timeLeft:0, boss:null, practice:null};
 let explainState = {active:false, pendingGameOver:false};
 let pauseState = {active:false, prevInputLocked:false, resumeBattleTimer:false};
 let roomBriefState = {active:false, room:null, onContinue:null};
 let bossSceneState = {active:false, introActive:false, archon:null, throne:null, stand:0, targetStand:0, cameraOverride:false, cameraPos:null, lookAt:null, clashTimer:null, riseTimer:null};
 let camFollow = {x:0,z:0};
-let UI = {tutorialChatAnchor:null};
+let UI = {tutorialChatAnchor:null, hpFloatTimer:null, swipe:null};
 let FX = {cameraKick:0, engageTimer:null, beatTimer:null, travelTimer:null, engageActive:false, beatActive:false, travelActive:false, audioCtx:null, logFlashTimer:null};
 let defaultTitleStoryHtml = '';
 const RUNNER_NAME = 'المُرسَل';
@@ -448,6 +441,7 @@ function refreshViewportProfile(){
     document.body.classList.toggle('mobile-fit', VIEW.mobile);
     document.body.classList.toggle('portrait-fit', VIEW.mobile && VIEW.portrait);
   }
+  updateMobileControlsVisibility();
   return VIEW;
 }
 
@@ -487,7 +481,12 @@ function isEditableElement(el){
 function isTextEntryContext(target){
   return isEditableElement(target) || isEditableElement(document.activeElement);
 }
-const setDisplay = (id, value) => { const el=$(id); if(el) el.style.display=value; return el; };
+const setDisplay = (id, value) => {
+  const el=$(id);
+  if(el) el.style.display=value;
+  if(id==='hud') updateMobileControlsVisibility();
+  return el;
+};
 const setText = (id, value) => { const el=$(id); if(el) el.textContent=value; return el; };
 const setHtml = (id, value) => { const el=$(id); if(el) el.innerHTML=value; return el; };
 const isFlexVisible = id => $(id)?.style.display==='flex';
@@ -509,7 +508,7 @@ function resetBattleState(){
   stopBattleTimer();
   Object.assign(battle, {
     active:false, mode:null, daemonId:null, daemonType:null, keyCarrier:false,
-    puzzle:null, timer:null, hintStep:0, timeLeft:0, boss:null, practice:null
+    puzzle:null, timer:null, hintStep:0, hintRevealedIndices:[], timeLeft:0, boss:null, practice:null
   });
 }
 
@@ -615,7 +614,9 @@ function clearRoomDecor(){
 function setTutorialChat(tag, title, body, anchor=null){
   const box=document.getElementById('tutorial-chat');
   if(!box) return;
-  document.getElementById('tutorial-chat-tag').textContent = tag;
+  const tagEl=document.getElementById('tutorial-chat-tag');
+  tagEl.textContent = tag || '';
+  tagEl.style.display = tag ? 'block' : 'none';
   document.getElementById('tutorial-chat-title').textContent = title;
   document.getElementById('tutorial-chat-body').textContent = body;
   UI.tutorialChatAnchor = anchor;
@@ -1313,7 +1314,7 @@ function getRoomDebrief(room){
 }
 
 function getKeyholderCallsign(room){
-  return ROOM_KEYHOLDER_CALLSIGNS[(Math.max(1, room) - 1) % ROOM_KEYHOLDER_CALLSIGNS.length];
+  return KEYHOLDER_CALLSIGN;
 }
 
 function getRoomDebriefHeadline(room, base){
@@ -1343,7 +1344,7 @@ function getRoomGameplayContext(room, base){
 function buildRoomBriefGrid(base, room){
   const cards = [
     `<div class="room-brief-block"><div class="hlabel">الطريقة</div><div class="room-brief-value">${base.methodLabel || base.domain}</div></div>`,
-    `<div class="room-brief-block"><div class="hlabel">طريقة اللعب</div><div class="room-brief-text">استخدم البيئة المحيطه بك لتفادي الدايمونز</div></div>`,
+    `<div class="room-brief-block"><div class="hlabel">طريقة اللعب</div><div class="room-brief-text">تحرك بهدوء، استغل الجدران والزوايا، ولا تترك الديمونز تقطع عليك الطريق.</div></div>`,
     `<div class="room-brief-block"><div class="hlabel">سياق اللعبة</div><div class="room-brief-text">${getRoomGameplayContext(room, base)}</div></div>`,
     `<div class="room-brief-block"><div class="hlabel">المفهوم الامني الاصلي</div><div class="room-brief-text"><strong>${base.domain || ''}</strong><br>${base.concept || ''}</div></div>`
   ];
@@ -1482,51 +1483,51 @@ function getNearbyTutorialStation(radius=1.8){
 function getTutorialStationCopy(station, interactive=false){
   const puzzle=ROOM_PUZZLES[station?.roomIdx] || TUTORIAL_PUZZLE;
   const actionCopy = interactive
-    ? 'قف فوق المنصة واضغط E أو Enter لبدء التدريب بلا ضرر أو مؤقت.'
-    : 'اقترب أكثر ثم قف فوق المنصة واضغط E أو Enter لفتح التدريب.';
+    ? 'اقترب من الرمز واضغط E أو Enter لبدء التدريب بلا ضرر أو مؤقت.'
+    : 'اقترب أكثر من الرمز ثم اضغط E أو Enter لفتح التدريب.';
 
   switch(puzzle.cipherType){
     case 'caesar':
       return {
-        tag:'منصة شيفرة',
-        title:'CAESAR // حلقتا الإزاحة',
-        body:`كل حلقة تمثل أبجدية تدور عن الأخرى بمقدار ثابت. ابحث عن فكرة الإزاحة الواحدة التي تطبق على كل الحروف. ${actionCopy}`
+        tag:'',
+        title:'CAESAR',
+        body:`في شيفرة قيصر، كل حرف يتحرك بعدد ثابت من الخطوات داخل الأبجدية. إذا عرفت مقدار الإزاحة، سترجع الكلمة كاملة بسهولة. ${actionCopy}`
       };
     case 'reverse':
       return {
-        tag:'منصة شيفرة',
-        title:'REVERSE // مرآة الاتجاه',
-        body:`لا يتغير أي حرف هنا؛ الذي ينقلب هو اتجاه القراءة فقط. عندما ترى هذا النمط، ابدأ من النهاية وعد إلى البداية. ${actionCopy}`
+        tag:'',
+        title:'REVERSE',
+        body:`هذه أبسط واحدة: الحروف نفسها صحيحة، لكن ترتيبها مقلوب. اقرأ من آخر حرف إلى أول حرف وستظهر لك الكلمة فورًا. ${actionCopy}`
       };
     case 'atbash':
       return {
-        tag:'منصة شيفرة',
-        title:'ATBASH // طرف يقابل طرفًا',
-        body:`الطرف الأول من الأبجدية يقابل الطرف الأخير دائمًا. هذا النمط يعلمك فكرة الأزواج الثابتة مثل A مع Z و B مع Y. ${actionCopy}`
+        tag:'',
+        title:'ATBASH',
+        body:`في أتباش، كل حرف له مقابل ثابت من الطرف الآخر في الأبجدية. فكر فيها كأزواج ثابتة: A مع Z، وB مع Y، وهكذا. ${actionCopy}`
       };
     case 'railfence':
       return {
-        tag:'منصة شيفرة',
-        title:'RAIL FENCE // مساران متعاقبان',
-        body:`الحروف تتناوب بين مسار علوي ومسار سفلي ثم تُجمع في سطر واحد. انظر إلى الخط المتعرج كأنه مسار ذهاب وعودة للحروف. ${actionCopy}`
+        tag:'',
+        title:'RAIL FENCE',
+        body:`هنا الحروف لا تتبدل، لكنها تتوزع بين مسارين ثم تُجمع من جديد. إذا تتبعت النمط المتعرج بهدوء، سترى الكلمة الأصلية. ${actionCopy}`
       };
     case 'scytale':
       return {
-        tag:'منصة شيفرة',
-        title:'SCYTALE // لفّ حول عمود',
-        body:`فكّر في النص كأنه كُتب صفًا صفًا على شبكة بثلاثة أعمدة، ثم خرج عمودًا عمودًا. المرجع في التحدي سيساعدك على تقسيم الأثر إلى كتل أعمدة من دون ورقة خارجية. ${actionCopy}`
+        tag:'',
+        title:'SCYTALE',
+        body:`تخيل أن النص وُضع داخل شبكة من ثلاثة أعمدة ثم قُرئ بطريقة مختلفة. رتّب الحروف داخل الأعمدة أولًا، وبعدها اقرأ الصفوف لتستعيد الكلمة. ${actionCopy}`
       };
     case 'columnar':
       return {
-        tag:'منصة شيفرة',
-        title:'COLUMNAR // أعمدة معاد ترتيبها',
-        body:`الحروف صحيحة لكن الأعمدة خرجت بترتيب جديد بدل 1-2-3. المرجع في التحدي سيبين لك أي كتلة تخص أي عمود قبل أن تعيد القراءة صفًا صفًا. ${actionCopy}`
+        tag:'',
+        title:'COLUMNAR',
+        body:`في هذا النوع، الأعمدة نفسها خرجت بترتيب خاطئ. أعد كل كتلة إلى عمودها الصحيح، ثم اقرأ الصفوف بالترتيب الطبيعي. ${actionCopy}`
       };
     default:
       return {
-        tag:'منصة شيفرة',
-        title:`${station?.label || puzzle.methodLabel || 'Cipher'} // منصة تدريب`,
-        body:`هذه منصة تدريبية على ${puzzle.methodLabel || 'الشيفرة الحالية'}. ${actionCopy}`
+        tag:'',
+        title:station?.label || puzzle.methodLabel || 'شيفرة',
+        body:`هذا تدريب سريع على ${puzzle.methodLabel || 'الشيفرة الحالية'}. ${actionCopy}`
       };
   }
 }
@@ -2817,12 +2818,61 @@ function getBalancedPuzzleWordPool(base){
   return pool;
 }
 
+const puzzleWordState = new Map();
+function getWordRandomInt(max){
+  if(max<=1) return 0;
+  if(window.crypto?.getRandomValues){
+    const buf = new Uint32Array(1);
+    const limit = Math.floor(0x100000000 / max) * max;
+    let value = 0;
+    do{
+      window.crypto.getRandomValues(buf);
+      value = buf[0];
+    }while(value>=limit);
+    return value % max;
+  }
+  return Math.floor(Math.random()*max);
+}
+function getPuzzleWordStateKey(base){
+  return `${base.roomTitle}|${base.cipherType}|${base.referenceType || ''}`;
+}
+function buildPuzzleWordBag(pool, lastWord=''){
+  const bag=[...pool];
+  for(let i=bag.length-1;i>0;i--){
+    const j=getWordRandomInt(i+1);
+    [bag[i],bag[j]]=[bag[j],bag[i]];
+  }
+  if(lastWord && bag.length>1 && bag[bag.length-1]===lastWord){
+    const swapIdx=getWordRandomInt(bag.length-1);
+    [bag[bag.length-1],bag[swapIdx]]=[bag[swapIdx],bag[bag.length-1]];
+  }
+  return bag;
+}
+function pickPuzzleWord(base){
+  const pool=[...getBalancedPuzzleWordPool(base)];
+  if(!pool.length) return 'CODE';
+  const key=getPuzzleWordStateKey(base);
+  const signature=pool.join('|');
+  let state=puzzleWordState.get(key);
+  if(!state || state.signature!==signature || !state.bag?.length){
+    state={
+      signature,
+      bag:buildPuzzleWordBag(pool,state?.lastWord || ''),
+      lastWord:state?.lastWord || ''
+    };
+  }
+  const answer=state.bag.pop() || pool[0];
+  state.lastWord=answer;
+  puzzleWordState.set(key,state);
+  return answer;
+}
+
 function normalizeAnswer(value){
   return (value || '').toUpperCase().replace(/[^A-Z0-9]/g,'');
 }
 
 function buildGeneratedPuzzle(base){
-  const answer = pick(getBalancedPuzzleWordPool(base));
+  const answer = pickPuzzleWord(base);
   const puzzle = {
     ...base,
     answer,
@@ -2951,13 +3001,33 @@ function getCipherProcessHint(puzzle){
 }
 
 function getProgressiveHint(puzzle, step){
-  const hints = [
-    getCipherStructureHint(puzzle),
-    getCipherKeyHint(puzzle),
-    getCipherProcessHintV2(puzzle),
-    `الإجابة من ${puzzle.answer.length} أحرف، وهي كلمة ${puzzle.hintCategory || 'ضمن موضوع الغرفة'}.`
-  ].filter(Boolean);
-  return hints[Math.min(step, hints.length-1)];
+  const answer = String(puzzle?.answerLabel || puzzle?.answer || '').toUpperCase();
+  if(!answer) return 'لا يوجد تلميح متاح الآن.';
+  const revealable = answer
+    .split('')
+    .map((ch, idx)=>(/[A-Z0-9]/.test(ch) ? idx : -1))
+    .filter(idx=>idx>=0);
+  if(!revealable.length) return `الحل: ${answer}`;
+
+  battle.hintRevealedIndices = Array.from(new Set(battle.hintRevealedIndices || []))
+    .filter(idx=>revealable.includes(idx))
+    .sort((a,b)=>a-b);
+
+  const hidden = revealable.filter(idx=>!battle.hintRevealedIndices.includes(idx));
+  if(hidden.length){
+    const nextIndex = hidden[getWordRandomInt(hidden.length)];
+    battle.hintRevealedIndices.push(nextIndex);
+    battle.hintRevealedIndices.sort((a,b)=>a-b);
+  }
+
+  const masked = answer.split('').map((ch, idx)=>{
+    if(!/[A-Z0-9]/.test(ch)) return ch;
+    return battle.hintRevealedIndices.includes(idx) ? ch : '_';
+  }).join(' ');
+
+  return battle.hintRevealedIndices.length >= revealable.length
+    ? `انكشف الحل كاملًا: ${masked}`
+    : `انكشف حرف جديد: ${masked}`;
 }
 
 function formatReferenceChunks(chunks, formatter){
@@ -3137,13 +3207,25 @@ function generateBossNodes(){
 
 function pickSpawnPointForRoute(route){
   const startX=0, startZ=8;
-  let best = {point:route[0] || {x:8,z:0}, index:0, score:-Infinity};
+  const points = (route && route.length) ? route : [{x:8,z:0}];
+  const preferredPoints = points.filter(pt=>{
+    const dx=Math.abs(pt.x-startX), dz=Math.abs(pt.z-startZ);
+    return (dx+dz)>=7 && !(pt.x<=2 && pt.z>=6);
+  });
+  const candidates = preferredPoints.length ? preferredPoints : points;
+  let best = {point:candidates[0] || {x:8,z:0}, index:0, score:-Infinity};
   (route || []).forEach((pt, idx)=>{
+    if(!candidates.includes(pt)) return;
     const dx=Math.abs(pt.x-startX), dz=Math.abs(pt.z-startZ);
     const manhattan=dx+dz;
     const chebyshev=Math.max(dx,dz);
     const immediateThreat = (dx===1&&dz===1) || (dx+dz===1);
-    const score = (manhattan*10) + chebyshev - (immediateThreat ? 100 : 0);
+    const startQuadrant = pt.x<=2 && pt.z>=6;
+    const closeToStart = manhattan<7;
+    const score = (manhattan*14) + (chebyshev*5) + (pt.x*2) + ((startZ-pt.z)*2)
+      - (immediateThreat ? 140 : 0)
+      - (startQuadrant ? 120 : 0)
+      - (closeToStart ? 70 : 0);
     if(score>best.score) best = {point:pt, index:idx, score};
   });
   return best;
@@ -3177,18 +3259,19 @@ function initDaemons(room){
     daemonGroups.push({
       id:(window.crypto && window.crypto.randomUUID) ? window.crypto.randomUUID() : String(Math.random()),
       x:s.x,z:s.z,mesh:dm,hasKey:false,route:spawn.route || [{x:s.x,z:s.z}],routeIndex:spawn.routeIndex || 0,
-      type, personality:plan.personality || 'default', facing:{x:0,z:1}, alertTurns:0, commitTurns:0, freezeTurns:0
+      type, personality:plan.personality || 'default', facing:{x:0,z:1}, alertTurns:0, commitTurns:0, freezeTurns:0,
+      lastKnownHero:null, searchTurns:0
     });
   });
   if(!daemonGroups.length){
     const dm=buildDaemonMesh('rook'); const wp=gToW(8,0); dm.position.set(wp.x,0,wp.z); scene.add(dm);
-    daemonGroups.push({id:String(Math.random()),x:8,z:0,mesh:dm,hasKey:true,route:[{x:8,z:0},{x:8,z:1},{x:7,z:1},{x:7,z:0}],routeIndex:0,type:'rook',personality:'default',facing:{x:0,z:1},alertTurns:0,commitTurns:0,freezeTurns:0});
+    daemonGroups.push({id:String(Math.random()),x:8,z:0,mesh:dm,hasKey:true,route:[{x:8,z:0},{x:8,z:1},{x:7,z:1},{x:7,z:0}],routeIndex:0,type:'rook',personality:'default',facing:{x:0,z:1},alertTurns:0,commitTurns:0,freezeTurns:0,lastKnownHero:null,searchTurns:0});
   }
   if(daemonGroups[keyHolderIndex]) daemonGroups[keyHolderIndex].hasKey = true;
   daemonGroups.forEach(dm=>{
     dm.callsign = dm.hasKey
       ? getKeyholderCallsign(room)
-      : `${dm.type==='bishop' ? 'SEER' : 'LANCER'}-${room}${daemonGroups.indexOf(dm)+1}`;
+      : '';
     if(dm.hasKey && dm.mesh){
       const marker = buildKeyBearerMarker(dm.type);
       dm.keyMarker = marker;
@@ -3396,6 +3479,35 @@ function getChaseTarget(dm, occupied){
   return isDaemonStepLegal(dm,tx,tz,occupied) ? {x:tx,z:tz} : null;
 }
 
+function getDistanceToPoint(dm, move, target){
+  const dx=Math.abs(move.x-target.x);
+  const dz=Math.abs(move.z-target.z);
+  return dm.type==='bishop'
+    ? Math.max(dx,dz) + (Math.abs(dx-dz)*0.25)
+    : dx+dz;
+}
+
+function pickSearchMove(dm, legalMoves, target){
+  if(!target || !legalMoves.length) return null;
+  const profile=getDaemonProfile(dm);
+  const sorted=legalMoves.slice().sort((a,b)=>{
+    const distA=getDistanceToPoint(dm,a,target);
+    const distB=getDistanceToPoint(dm,b,target);
+    if(distA!==distB) return distA-distB;
+
+    const alignA = dm.type==='rook'
+      ? ((a.x===target.x || a.z===target.z) ? 0 : 1)
+      : (Math.abs(a.x-target.x)===Math.abs(a.z-target.z) ? 0 : 1);
+    const alignB = dm.type==='rook'
+      ? ((b.x===target.x || b.z===target.z) ? 0 : 1)
+      : (Math.abs(b.x-target.x)===Math.abs(b.z-target.z) ? 0 : 1);
+    return alignA-alignB;
+  });
+
+  const choiceCount=Math.max(1, Math.min(sorted.length, (profile.candidateDepth || 1) + 1));
+  return sorted[getWordRandomInt(choiceCount)] || sorted[0] || null;
+}
+
 function buildCaesarTable(shift){
   const alpha='ABCDEFGHIJKLMNOPQRSTUVWXYZ';
   return `<div class="caesar-table"><div class="cp-hint cp-hint--meta">KEY ${shift}</div><div class="ct-row">${buildCipherRow(alpha)}</div></div>`;
@@ -3408,7 +3520,7 @@ function buildReverseReference(){
 function buildAtbashTable(){
   const alpha='ABCDEFGHIJKLMNOPQRSTUVWXYZ';
   const reversed=alpha.split('').reverse().join('');
-  return `<div class="caesar-table"><div class="ct-row">${buildCipherRow(alpha)}</div><div class="ct-row">${buildCipherRow(reversed)}</div></div>`;
+  return `<div class="caesar-table"><div class="ct-row">${buildCipherRow(alpha)}</div><div class="ct-row ct-row--atbash">${buildCipherRow(reversed)}</div></div>`;
 }
 
 function buildRailFenceReference(){
@@ -3479,7 +3591,7 @@ function openPracticeStation(station){
   battle.puzzle=genPracticePuzzle(station.roomIdx);
   battle.hintStep=0;
   battle.timeLeft=0;
-  showBattleOverlay('منصة التدريب', '#00e5ff', `${station.label} // تدريب حر بلا ضرر ولا مؤقت.`);
+  showBattleOverlay('تدريب حر', '#00e5ff', `${station.label} // تدريب بلا ضرر ولا مؤقت.`);
   renderBattlePanel();
 }
 
@@ -3686,11 +3798,11 @@ function renderBattlePanel(){
           </div>
         </div>
       </div>
-      <div class="cp-title">منصة ${battle.practice.label}</div>
+        <div class="cp-title">تدريب ${battle.practice.label}</div>
       <div class="cp-brief">${p.brief}</div>
       ${artifactBlock}
       ${referenceBlock}
-      <div id="battle-hint" class="cp-feedback hint">التلميحات مجانية هنا. استخدمها حتى تفهم الفكرة.</div>
+      <div id="battle-hint" class="cp-feedback hint">كل ضغطة على التلميح تكشف حرفًا جديدًا من الحل هنا مجانًا.</div>
       <input id="battle-input" class="cp-input" placeholder="اكتب الإجابة هنا" autocomplete="off" autocorrect="off" autocapitalize="characters" spellcheck="false" />
       <div class="cp-action">
         <button class="cp-btn" onclick="requestHint()">تلميح</button>
@@ -3775,7 +3887,7 @@ function renderBattlePanel(){
     <div class="cp-title">${p.roomTitle}</div>
     ${artifactBlock}
     ${referenceBlock}
-    <div id="battle-hint" class="cp-feedback hint">صندوق التلميح: عند الطلب سيكلفك ${HINT_DAMAGE} HP.</div>
+    <div id="battle-hint" class="cp-feedback hint">كل ضغطة على التلميح تكشف حرفًا جديدًا من الحل وتكلفك ${HINT_DAMAGE} HP.</div>
     <input id="battle-input" class="cp-input" placeholder="اكتب الإجابة هنا" autocomplete="off" autocorrect="off" autocapitalize="characters" spellcheck="false" />
     ${actionButtons}`;
   const input=document.getElementById('battle-input');
@@ -3855,8 +3967,8 @@ function submitBattle(){
       battle.active=false;
       document.getElementById('battle-screen').style.pointerEvents='none';
       triggerStatusBeat(
-        `اكتملت منصة ${battle.practice?.label || 'التدريب'}`,
-        'يمكنك إعادة التدريب متى شئت أو الانتقال إلى منصة أخرى داخل المعرض.',
+        `اكتمل تدريب ${battle.practice?.label || 'التدريب'}`,
+        'يمكنك إعادة التدريب متى شئت أو الانتقال إلى تدريب آخر داخل المعرض.',
         'ok',
         SUCCESS_BEAT_MS,
         ()=>closeBattle(true,{reason:'practice-solved', practice:true, stationId:battle.practice?.stationId})
@@ -4046,13 +4158,18 @@ function closeBattle(success, options={}){
 function choosePatrolTarget(dm, occupied){
   if(!dm.route || !dm.route.length) return {x:dm.x,z:dm.z};
   const profile=getDaemonProfile(dm);
+  const depthLimit=Math.max(1, Math.min(dm.route.length-1, profile.candidateDepth || 1));
 
   if(Math.random()<profile.holdChance) return {x:dm.x,z:dm.z};
 
   const valid = getLegalMoves(dm, occupied);
   if(!valid.length) return {x:dm.x,z:dm.z};
 
-  const offsets = Math.random()<profile.patrolFlipChance ? [-1,1] : [1,-1];
+  const directionOrder = Math.random()<profile.patrolFlipChance ? [-1,1] : [1,-1];
+  const offsets = [];
+  for(let depth=1; depth<=depthLimit; depth++){
+    directionOrder.forEach(dir=>offsets.push(dir*depth));
+  }
   for(const off of offsets){
     const idx = (dm.routeIndex + off + dm.route.length) % dm.route.length;
     const target = dm.route[idx];
@@ -4076,11 +4193,13 @@ function choosePatrolTarget(dm, occupied){
   let bestMove = null;
   let bestScore = Infinity;
   let bestRouteIndex = dm.routeIndex;
-  const candidateRouteIndices = [
-    dm.routeIndex,
-    (dm.routeIndex + 1) % dm.route.length,
-    (dm.routeIndex - 1 + dm.route.length) % dm.route.length
-  ];
+  const candidateRouteIndices = [dm.routeIndex];
+  for(let depth=1; depth<=depthLimit; depth++){
+    directionOrder.forEach(dir=>{
+      const idx = (dm.routeIndex + (dir*depth) + dm.route.length) % dm.route.length;
+      if(!candidateRouteIndices.includes(idx)) candidateRouteIndices.push(idx);
+    });
+  }
 
   valid.forEach(move=>{
     candidateRouteIndices.forEach(routeIdx=>{
@@ -4151,11 +4270,25 @@ function updateHeroVitals(){
   if(battleVal) battleVal.textContent=`${G.hero.hp}/${G.hero.maxHp}`;
 }
 
+function showHpFloat(amount){
+  const el=document.getElementById('hp-float');
+  if(!el || !amount) return;
+  clearTimeout(UI.hpFloatTimer);
+  el.textContent = amount>0 ? `+${amount}` : `${amount}`;
+  el.className = `hp-float show ${amount>0 ? 'gain' : 'loss'}`;
+  UI.hpFloatTimer=setTimeout(()=>{
+    el.className='hp-float';
+    el.textContent='';
+  },900);
+}
+
 function heroHeal(amount){
   const before=G.hero.hp;
   G.hero.hp=Math.min(G.hero.maxHp,G.hero.hp+amount);
   updateHeroVitals();
-  return G.hero.hp-before;
+  const gained=G.hero.hp-before;
+  if(gained>0) showHpFloat(gained);
+  return gained;
 }
 
 function collectMedkitAtHero(){
@@ -4178,7 +4311,7 @@ function onHeroArrive(){
     if(station){
       const samePrompt = G.tutorialPrompt?.type==='station' && G.tutorialPrompt.stationId===station.id;
       G.tutorialPrompt={type:'station', stationId:station.id};
-      if(!samePrompt) log(`// منصة ${station.label}: اضغط E أو Enter لبدء التدريب`,'sys');
+      if(!samePrompt) log(`// ${station.label}: اضغط E أو Enter لبدء التدريب`,'sys');
       updateTutorialChat();
       return;
     }
@@ -4209,21 +4342,32 @@ function daemonTurn(){
     occupied.delete(`${dm.x},${dm.z}`);
 
     const sees = dm.type==='rook' ? hasLineOfSightRook(dm) : hasLineOfSightBishop(dm);
-    if(sees) dm.alertTurns = Math.max(dm.alertTurns, profile.alertTurns);
-    else dm.alertTurns = Math.max(0, dm.alertTurns-1);
-    if(sees || isThreatClose(dm)) dm.commitTurns = Math.max(dm.commitTurns, profile.commitTurns);
-    else dm.commitTurns = Math.max(0, dm.commitTurns-1);
+    if(sees){
+      dm.lastKnownHero = {x:G.hero.x, z:G.hero.z};
+      dm.searchTurns = profile.alertTurns + 2;
+      dm.alertTurns = Math.max(dm.alertTurns, profile.alertTurns);
+      dm.commitTurns = Math.max(dm.commitTurns, profile.commitTurns);
+    } else {
+      dm.alertTurns = Math.max(0, dm.alertTurns-1);
+      dm.commitTurns = Math.max(0, dm.commitTurns-1);
+      if(dm.lastKnownHero){
+        dm.searchTurns = Math.max(0, (dm.searchTurns || 0) - 1);
+        if(dm.searchTurns===0) dm.lastKnownHero = null;
+      }
+    }
 
     let chosen={x:dm.x,z:dm.z};
     if(dm.x===G.hero.x && dm.z===G.hero.z){
       catcher=dm;
     } else if(dm.freezeTurns && dm.freezeTurns>0){
       dm.freezeTurns--;
-    } else if(dm.alertTurns>0 || dm.commitTurns>0 || sees){
-      dm.alertTurns = Math.max(dm.alertTurns, profile.alertTurns + 1);
+    } else if(sees){
       const chase = getChaseTarget(dm, occupied);
       const valid = getLegalMoves(dm, occupied);
       chosen = pickImperfectAlertMove(dm, valid, chase);
+    } else if((dm.searchTurns||0)>0 && dm.lastKnownHero){
+      const valid = getLegalMoves(dm, occupied);
+      chosen = pickSearchMove(dm, valid, dm.lastKnownHero) || choosePatrolTarget(dm, occupied);
     } else {
       chosen = choosePatrolTarget(dm, occupied);
     }
@@ -4232,6 +4376,10 @@ function daemonTurn(){
     }
     dm.facing = {x:Math.sign(chosen.x-dm.x), z:Math.sign(chosen.z-dm.z)};
     dm.x=chosen.x; dm.z=chosen.z;
+    if(!sees && dm.lastKnownHero && dm.x===dm.lastKnownHero.x && dm.z===dm.lastKnownHero.z){
+      dm.lastKnownHero=null;
+      dm.searchTurns=0;
+    }
     occupied.add(`${dm.x},${dm.z}`);
     tweenDaemon(dm,dm.x,dm.z);
     if(dm.x===G.hero.x&&dm.z===G.hero.z) catcher=dm;
@@ -4245,6 +4393,7 @@ function daemonTurn(){
 function heroTakeDamage(dmg, opts={}){
   G.hero.hp=Math.max(0,G.hero.hp-dmg);
   updateHeroVitals();
+  if(dmg>0) showHpFloat(-dmg);
   if(G.hero.hp<=0 && !opts.deferGameOver) setTimeout(gameOver,400);
 }
 
@@ -4406,6 +4555,11 @@ function startSession(mode=MODE_RUN){
   resetFlowState();
   resetSceneFx();
   ensureAudioContext();
+  const hpFloat=$('hp-float');
+  if(hpFloat){
+    hpFloat.className='hp-float';
+    hpFloat.textContent='';
+  }
   currentTheme = mode===MODE_TUTORIAL ? TUTORIAL_THEME : ROOM_THEMES[0];
   if(!scene) initThree();
   else applyRoomTheme(currentTheme);
@@ -4436,7 +4590,7 @@ function startTutorial(){
   startSession(MODE_TUTORIAL);
   triggerStatusBeat(
     'محاكاة تمهيدية',
-    'هذا معرض آمن: كل منصة تحمل شكلًا صغيرًا يلمّح إلى شيفرتها، والاقتراب من أي منصة أو من ROOK وBISHOP يفتح شرحًا سريعًا فوقها.',
+    'هذا معرض آمن: كل رمز يحمل شكلًا صغيرًا يلمّح إلى شيفرته، والاقتراب من أي رمز أو من ROOK وBISHOP يفتح شرحًا سريعًا فوقه.',
     'clear',
     620
   );
@@ -4444,8 +4598,16 @@ function startTutorial(){
 
 function log(msg,type=''){
   const el=document.getElementById('log-strip');
+  if(!el) return;
   const d=document.createElement('div'); d.className='ll '+type; d.textContent=msg;
   el.appendChild(d); while(el.children.length>6) el.removeChild(el.firstChild);
+}
+
+function updateMobileControlsVisibility(){
+  const el=$('mobile-controls');
+  if(!el) return;
+  const show = VIEW.mobile && isFlexVisible('hud');
+  el.classList.toggle('visible', show);
 }
 
 function handlePlayerAction(){
@@ -4484,14 +4646,69 @@ function handleDirectionalInput(dir){
   return handleMoveInput(move.dx, move.dz);
 }
 
-function setupMobileControls(){
-  document.querySelectorAll('[data-mobile-dir]').forEach(btn=>{
-    btn.addEventListener('pointerdown',e=>{
-      e.preventDefault();
-      e.stopPropagation();
-      handleDirectionalInput(btn.dataset.mobileDir);
-    });
+function resetSwipeState(){
+  UI.swipe = {active:false, pointerId:null, startX:0, startY:0, lastX:0, lastY:0};
+}
+
+function getSwipeDirection(dx, dy){
+  const absX=Math.abs(dx), absY=Math.abs(dy);
+  const threshold = VIEW.phone ? 22 : 28;
+  if(Math.max(absX, absY) < threshold) return null;
+  if(absX > absY * 1.15) return dx>0 ? 'right' : 'left';
+  if(absY > absX * 1.15) return dy>0 ? 'down' : 'up';
+  return absX>=absY ? (dx>0 ? 'right' : 'left') : (dy>0 ? 'down' : 'up');
+}
+
+function canUseSwipeMovement(){
+  return VIEW.mobile &&
+    isFlexVisible('hud') &&
+    !pauseState.active &&
+    !roomBriefState.active &&
+    !isFlexVisible('s-explain') &&
+    !isFlexVisible('s-tutorial-exit') &&
+    !isTextEntryContext(document.activeElement);
+}
+
+function setupSwipeControls(){
+  const surface=$('cv3');
+  if(!surface) return;
+  resetSwipeState();
+
+  surface.addEventListener('pointerdown',e=>{
+    if(e.pointerType && e.pointerType!=='touch' && e.pointerType!=='pen') return;
+    if(!canUseSwipeMovement()) return;
+    UI.swipe = {
+      active:true,
+      pointerId:e.pointerId,
+      startX:e.clientX,
+      startY:e.clientY,
+      lastX:e.clientX,
+      lastY:e.clientY
+    };
   });
+
+  surface.addEventListener('pointermove',e=>{
+    if(!UI.swipe?.active || UI.swipe.pointerId!==e.pointerId) return;
+    UI.swipe.lastX=e.clientX;
+    UI.swipe.lastY=e.clientY;
+  });
+
+  const finishSwipe=e=>{
+    if(!UI.swipe?.active) return;
+    if(e.pointerId!==undefined && UI.swipe.pointerId!==e.pointerId) return;
+    const dx=(e.clientX ?? UI.swipe.lastX) - UI.swipe.startX;
+    const dy=(e.clientY ?? UI.swipe.lastY) - UI.swipe.startY;
+    resetSwipeState();
+    if(!canUseSwipeMovement()) return;
+    const dir=getSwipeDirection(dx, dy);
+    if(dir) handleDirectionalInput(dir);
+  };
+
+  surface.addEventListener('pointerup', finishSwipe);
+  surface.addEventListener('pointercancel', ()=>resetSwipeState());
+}
+
+function setupMobileControls(){
   $('mobile-action')?.addEventListener('pointerdown',e=>{
     e.preventDefault();
     e.stopPropagation();
@@ -4505,6 +4722,7 @@ function setupMobileControls(){
 }
 
 setupMobileControls();
+setupSwipeControls();
 
 // Optional PWA cache registration for GitHub Pages / HTTPS hosting.
 if ('serviceWorker' in navigator) {

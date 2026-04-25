@@ -20,7 +20,6 @@
 <div id="s-title">
   <canvas id="rain"></canvas>
   <div class="title-main">CIPHER.BREACH</div>
-  <div class="title-sub">// اختراق المصفوفة</div>
   <div class="title-story">
     أنت المُرسَل، عالق داخل شبكة أمنية خربانة، وكل غرفة فيها شيفرة لازم تفكها.<br>
     خذ المفتاح واهرب من كل قطاع قبل ما يمسكك الحراس.<br>
@@ -42,6 +41,7 @@
       <div class="hlabel">الصحة</div>
       <div class="hp-wrap"><div class="hp-fill hp-fill--full" id="hp-fill"></div></div>
       <div class="hval hval--compact" id="h-hp">100</div>
+      <div class="hp-float" id="hp-float" aria-live="polite"></div>
     </div>
     <div class="hud-pill"><div><div class="hlabel">مفتاح الخروج</div><div class="hval gold" id="h-key">لم يتم الاستحواذ</div></div></div>
     <div class="hud-pill"><div><div class="hlabel">الأدوار</div><div class="hval green" id="h-turns">0</div></div></div>
@@ -55,7 +55,6 @@
         <div class="hlabel mini-label">الخريطة المصغرة</div>
         <canvas id="minimap" width="140" height="140"></canvas>
       </div>
-      <div id="log-strip"><div class="ll sys">// جاهزية الاختراق</div></div>
     </div>
   </div>
 </div>
@@ -176,18 +175,9 @@
 
 <!-- Mobile-first controls for the original 3D game -->
 <div id="mobile-controls" aria-label="Mobile controls">
-  <div class="mobile-dpad" aria-label="Movement controls">
-    <button class="mobile-btn mobile-up" type="button" data-mobile-dir="up" aria-label="Move up">▲</button>
-    <div class="mobile-dpad-row">
-      <button class="mobile-btn" type="button" data-mobile-dir="left" aria-label="Move left">◀</button>
-      <button class="mobile-btn" type="button" data-mobile-dir="down" aria-label="Move down">▼</button>
-      <button class="mobile-btn" type="button" data-mobile-dir="right" aria-label="Move right">▶</button>
-    </div>
-  </div>
-
   <div class="mobile-actions" aria-label="Action controls">
-    <button class="mobile-btn mobile-action" type="button" id="mobile-action">ACTION</button>
-    <button class="mobile-btn mobile-pause" type="button" id="mobile-pause">PAUSE</button>
+    <button class="mobile-btn mobile-action" type="button" id="mobile-action">تفاعل</button>
+    <button class="mobile-btn mobile-pause" type="button" id="mobile-pause">إيقاف</button>
   </div>
 </div>
 
