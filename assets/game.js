@@ -9,8 +9,11 @@ const WRONG_ANSWER_DAMAGE = 5;
 const HINT_DAMAGE = 2;
 const RETREAT_DAMAGE = 5;
 const RETREAT_FREEZE_TURNS = 4;
+const ROOK_SIGHT_RANGE = 4;
 const BISHOP_SIGHT_RANGE = 4;
 const ROOK_STEP_LIMIT = 2;
+const AGGRO_MEMORY_TURNS = 6;
+const AGGRO_BREAK_COVER_TURNS = 2;
 const ENCOUNTER_TRANSITION_MS = 380;
 const SUCCESS_BEAT_MS = 360;
 const ROOM_CLEAR_BEAT_MS = 520;
@@ -3233,12 +3236,12 @@ function initDaemons(room){
       id:(window.crypto && window.crypto.randomUUID) ? window.crypto.randomUUID() : String(Math.random()),
       x:s.x,z:s.z,mesh:dm,hasKey:false,route:spawn.route || [{x:s.x,z:s.z}],routeIndex:spawn.routeIndex || 0,
       type, personality:plan.personality || 'default', facing:{x:0,z:1}, alertTurns:0, commitTurns:0, freezeTurns:0,
-      lastKnownHero:null, searchTurns:0
+      lastKnownHero:null, searchTurns:0, coverTurns:0
     });
   });
   if(!daemonGroups.length){
     const dm=buildDaemonMesh('rook'); const wp=gToW(8,0); dm.position.set(wp.x,0,wp.z); scene.add(dm);
-    daemonGroups.push({id:String(Math.random()),x:8,z:0,mesh:dm,hasKey:true,route:[{x:8,z:0},{x:8,z:1},{x:7,z:1},{x:7,z:0}],routeIndex:0,type:'rook',personality:'default',facing:{x:0,z:1},alertTurns:0,commitTurns:0,freezeTurns:0,lastKnownHero:null,searchTurns:0});
+    daemonGroups.push({id:String(Math.random()),x:8,z:0,mesh:dm,hasKey:true,route:[{x:8,z:0},{x:8,z:1},{x:7,z:1},{x:7,z:0}],routeIndex:0,type:'rook',personality:'default',facing:{x:0,z:1},alertTurns:0,commitTurns:0,freezeTurns:0,lastKnownHero:null,searchTurns:0,coverTurns:0});
   }
   if(daemonGroups[keyHolderIndex]) daemonGroups[keyHolderIndex].hasKey = true;
   daemonGroups.forEach(dm=>{
@@ -3336,106 +3339,92 @@ function getLegalMoves(dm, occupied){
   return raw.filter(m=>isDaemonStepLegal(dm,m.x,m.z,occupied));
 }
 
-function movePressure(dm, move){
-  const dx=Math.abs(move.x-G.hero.x), dz=Math.abs(move.z-G.hero.z);
-  const profile=getDaemonProfile(dm);
-  const base = dm.type==='bishop' ? Math.max(dx,dz)+(Math.abs(dx-dz)*0.35) : dx+dz;
-  return base - (profile.threatBonus * 0.18);
-}
-
 function canCatchFrom(dm, fromX, fromZ){
   return wouldCollideWithHero(dm, fromX, fromZ);
 }
 
-function isThreatClose(dm){
-  const profile=getDaemonProfile(dm);
-  const dx=Math.abs(G.hero.x-dm.x), dz=Math.abs(G.hero.z-dm.z);
-  return dm.type==='rook'
-    ? (((dx===0||dz===0) && (dx+dz)<=3+profile.threatBonus) || (dx+dz)<=2+(profile.threatBonus*0.5))
-    : Math.max(dx,dz)<=2+profile.threatBonus;
-}
-
-function pickImperfectAlertMove(dm, legalMoves, preferredMove=null){
-  if(!legalMoves.length) return {x:dm.x,z:dm.z};
-  const profile=getDaemonProfile(dm);
-  const preferredKey = preferredMove ? keyOf(preferredMove.x,preferredMove.z) : null;
-  const sorted = legalMoves.slice().sort((a,b)=>{
-    const prefA = preferredKey && keyOf(a.x,a.z)===preferredKey ? 0 : 1;
-    const prefB = preferredKey && keyOf(b.x,b.z)===preferredKey ? 0 : 1;
-    if(prefA!==prefB) return prefA-prefB;
-
-    const catchA = canCatchFrom(dm,a.x,a.z) ? 0 : 1;
-    const catchB = canCatchFrom(dm,b.x,b.z) ? 0 : 1;
-    if(catchA!==catchB) return catchA-catchB;
-
-    const pressureA = movePressure(dm,a);
-    const pressureB = movePressure(dm,b);
-    if(pressureA!==pressureB) return pressureA-pressureB;
-
-    const alignA = dm.type==='rook'
-      ? ((a.x===G.hero.x || a.z===G.hero.z) ? 0 : 1)
-      : (Math.abs(a.x-G.hero.x)===Math.abs(a.z-G.hero.z) ? 0 : 1);
-    const alignB = dm.type==='rook'
-      ? ((b.x===G.hero.x || b.z===G.hero.z) ? 0 : 1)
-      : (Math.abs(b.x-G.hero.x)===Math.abs(b.z-G.hero.z) ? 0 : 1);
-    return alignA-alignB;
-  });
-  const best = sorted[0];
-  const currentPressure = movePressure(dm, {x:dm.x,z:dm.z});
-  const bestPressure = movePressure(dm,best);
-  if(
-    sorted.length===1 ||
-    preferredKey ||
-    canCatchFrom(dm,best.x,best.z)
-  ) return best;
-
-  const candidates = sorted.filter((m,idx)=>{
-    if(idx>profile.candidateDepth) return false;
-    const pressure = movePressure(dm,m);
-    return pressure < currentPressure && pressure <= bestPressure + 1.35;
-  });
-  if(!candidates.length) return best;
-
-  const weights = candidates.map((m,idx)=>{
-    const forwardBias = Math.sign(m.x-dm.x)===dm.facing.x && Math.sign(m.z-dm.z)===dm.facing.z ? 1.15 : 0;
-    return (idx===0 ? profile.bestWeight : idx===1 ? profile.secondWeight : profile.thirdWeight) + forwardBias;
-  });
-  let roll = Math.random() * weights.reduce((sum,w)=>sum+w,0);
-  for(let i=0;i<candidates.length;i++){
-    roll -= weights[i];
-    if(roll<=0) return candidates[i];
-  }
-  return best;
-}
-
-function hasLineOfSightRook(dm){
-  const dx=G.hero.x-dm.x, dz=G.hero.z-dm.z;
+function hasRookSightFrom(fromX,fromZ,targetX,targetZ,range=ROOK_SIGHT_RANGE){
+  const dx=targetX-fromX, dz=targetZ-fromZ;
   if(dx!==0 && dz!==0) return false;
   const dist=Math.abs(dx)+Math.abs(dz);
-  if(dist===0||dist>4) return false;
+  if(dist===0||dist>range) return false;
   const sx=Math.sign(dx), sz=Math.sign(dz);
-  for(let i=1;i<=dist;i++){
-    const tx=dm.x+sx*i, tz=dm.z+sz*i;
+  for(let i=1;i<dist;i++){
+    const tx=fromX+sx*i, tz=fromZ+sz*i;
     if(getNodeState(tx,tz)===WALL) return false;
   }
   return true;
 }
 
-function hasLineOfSightBishop(dm){
-  const dx=G.hero.x-dm.x, dz=G.hero.z-dm.z;
+function hasBishopSightFrom(fromX,fromZ,targetX,targetZ,range=BISHOP_SIGHT_RANGE){
+  const dx=targetX-fromX, dz=targetZ-fromZ;
   if(Math.abs(dx)!==Math.abs(dz) || dx===0) return false;
   const dist=Math.abs(dx);
-  if(dist>BISHOP_SIGHT_RANGE) return false;
-  return isBishopPathClear(dm.x,dm.z,G.hero.x,G.hero.z);
+  if(dist>range) return false;
+  const sx=Math.sign(dx), sz=Math.sign(dz);
+  for(let i=1;i<dist;i++){
+    const nx=fromX+sx*i, nz=fromZ+sz*i;
+    if(getNodeState(nx,nz)===WALL) return false;
+  }
+  return true;
 }
 
-function canCatch(dm){
-  return dm.x===G.hero.x && dm.z===G.hero.z;
+function hasLineOfSightRook(dm){
+  return hasRookSightFrom(dm.x,dm.z,G.hero.x,G.hero.z);
 }
 
-function getChaseTarget(dm, occupied){
+function hasLineOfSightBishop(dm){
+  return hasBishopSightFrom(dm.x,dm.z,G.hero.x,G.hero.z);
+}
+
+function canDaemonSeeHero(dm){
+  return dm.type==='rook' ? hasLineOfSightRook(dm) : hasLineOfSightBishop(dm);
+}
+
+function hasAlignedCoverBetween(fromX,fromZ,targetX,targetZ){
+  const dx=targetX-fromX, dz=targetZ-fromZ;
+  const rookLine = dx===0 || dz===0;
+  const bishopLine = Math.abs(dx)===Math.abs(dz);
+  if(!rookLine && !bishopLine) return false;
+  const steps=rookLine ? Math.abs(dx)+Math.abs(dz) : Math.abs(dx);
+  if(steps<=1) return false;
+  const sx=Math.sign(dx), sz=Math.sign(dz);
+  for(let i=1;i<steps;i++){
+    if(getNodeState(fromX+sx*i,fromZ+sz*i)===WALL) return true;
+  }
+  return false;
+}
+
+function isHeroBehindAdjacentCover(dm){
+  const hx=G.hero.x, hz=G.hero.z;
+  const dx=dm.x-hx, dz=dm.z-hz;
+  const probes=[];
+  if(dx!==0 && Math.abs(dx)>=Math.abs(dz)) probes.push({x:hx+Math.sign(dx),z:hz});
+  if(dz!==0 && Math.abs(dz)>=Math.abs(dx)) probes.push({x:hx,z:hz+Math.sign(dz)});
+  if(dx!==0 && dz!==0){
+    probes.push({x:hx+Math.sign(dx),z:hz});
+    probes.push({x:hx,z:hz+Math.sign(dz)});
+  }
+  const seen=new Set();
+  return probes.some(p=>{
+    const key=keyOf(p.x,p.z);
+    if(seen.has(key)) return false;
+    seen.add(key);
+    return getNodeState(p.x,p.z)===WALL;
+  });
+}
+
+function isHeroWellHiddenFrom(dm){
+  if(canDaemonSeeHero(dm)) return false;
+  if(hasAlignedCoverBetween(dm.x,dm.z,G.hero.x,G.hero.z)) return true;
+  const dist=Math.abs(dm.x-G.hero.x)+Math.abs(dm.z-G.hero.z);
+  return dist>1 && isHeroBehindAdjacentCover(dm);
+}
+
+function getChaseTargetTo(dm, target, occupied){
+  if(!target) return null;
   if(dm.type==='rook'){
-    const dx=G.hero.x-dm.x, dz=G.hero.z-dm.z;
+    const dx=target.x-dm.x, dz=target.z-dm.z;
     if(dx!==0 && dz!==0) return null;
     const sx=Math.sign(dx), sz=Math.sign(dz);
     const dist=Math.abs(dx)+Math.abs(dz);
@@ -3445,11 +3434,15 @@ function getChaseTarget(dm, occupied){
     }
     return null;
   }
-  const dx=G.hero.x-dm.x, dz=G.hero.z-dm.z;
+  const dx=target.x-dm.x, dz=target.z-dm.z;
   if(Math.abs(dx)!==Math.abs(dz) || dx===0) return null;
   const sx=Math.sign(dx), sz=Math.sign(dz);
   const tx=dm.x+sx, tz=dm.z+sz;
   return isDaemonStepLegal(dm,tx,tz,occupied) ? {x:tx,z:tz} : null;
+}
+
+function getChaseTarget(dm, occupied){
+  return getChaseTargetTo(dm, G.hero, occupied);
 }
 
 function getDistanceToPoint(dm, move, target){
@@ -3458,6 +3451,50 @@ function getDistanceToPoint(dm, move, target){
   return dm.type==='bishop'
     ? Math.max(dx,dz) + (Math.abs(dx-dz)*0.25)
     : dx+dz;
+}
+
+function moveThreatensTarget(dm, move, target){
+  return dm.type==='rook'
+    ? hasRookSightFrom(move.x,move.z,target.x,target.z)
+    : hasBishopSightFrom(move.x,move.z,target.x,target.z);
+}
+
+function pickAggroMove(dm, legalMoves, target, preferredMove=null){
+  if(!target || !legalMoves.length) return {x:dm.x,z:dm.z};
+  const profile=getDaemonProfile(dm);
+  const preferredKey=preferredMove ? keyOf(preferredMove.x,preferredMove.z) : null;
+  const ranked=legalMoves.map(move=>{
+    const catches=canCatchFrom(dm,move.x,move.z);
+    const preferred=preferredKey && keyOf(move.x,move.z)===preferredKey;
+    const threatens=moveThreatensTarget(dm,move,target);
+    const dist=getDistanceToPoint(dm,move,target);
+    const align=dm.type==='rook'
+      ? (move.x===target.x || move.z===target.z)
+      : (Math.abs(move.x-target.x)===Math.abs(move.z-target.z));
+    const closing=getDistanceToPoint(dm,move,target)<getDistanceToPoint(dm,{x:dm.x,z:dm.z},target);
+    const facing=(Math.sign(move.x-dm.x)===dm.facing.x && Math.sign(move.z-dm.z)===dm.facing.z);
+    let score=dist*8;
+    if(catches) score-=100;
+    if(preferred) score-=42;
+    if(threatens) score-=24;
+    if(align) score-=8;
+    if(closing) score-=5;
+    if(facing) score-=1.2;
+    return {move,score};
+  }).sort((a,b)=>a.score-b.score);
+  const best=ranked[0];
+  if(!best) return {x:dm.x,z:dm.z};
+  if(best.score<-50 || preferredKey) return best.move;
+  const spread=dm.commitTurns>0 ? 9 : 6;
+  const maxChoices=Math.max(1, Math.min(ranked.length, (profile.candidateDepth || 1) + 2));
+  const candidates=ranked.filter((entry,idx)=>idx<maxChoices && entry.score<=best.score+spread);
+  const weights=candidates.map((_,idx)=>idx===0 ? profile.bestWeight : idx===1 ? profile.secondWeight : profile.thirdWeight);
+  let roll=Math.random()*weights.reduce((sum,w)=>sum+w,0);
+  for(let i=0;i<candidates.length;i++){
+    roll-=weights[i];
+    if(roll<=0) return candidates[i].move;
+  }
+  return best.move;
 }
 
 function pickSearchMove(dm, legalMoves, target){
@@ -4308,19 +4345,37 @@ function daemonTurn(){
     const profile=getDaemonProfile(dm);
     occupied.delete(`${dm.x},${dm.z}`);
 
-    const sees = dm.type==='rook' ? hasLineOfSightRook(dm) : hasLineOfSightBishop(dm);
+    const sees = canDaemonSeeHero(dm);
+    let hidden=false;
     if(sees){
       dm.lastKnownHero = {x:G.hero.x, z:G.hero.z};
-      dm.searchTurns = profile.alertTurns + 2;
+      dm.searchTurns = Math.max(dm.searchTurns || 0, profile.alertTurns + AGGRO_MEMORY_TURNS);
       dm.alertTurns = Math.max(dm.alertTurns, profile.alertTurns);
       dm.commitTurns = Math.max(dm.commitTurns, profile.commitTurns);
-    } else {
-      dm.alertTurns = Math.max(0, dm.alertTurns-1);
-      dm.commitTurns = Math.max(0, dm.commitTurns-1);
-      if(dm.lastKnownHero){
-        dm.searchTurns = Math.max(0, (dm.searchTurns || 0) - 1);
-        if(dm.searchTurns===0) dm.lastKnownHero = null;
+      dm.coverTurns = 0;
+    } else if(dm.lastKnownHero || dm.alertTurns>0 || dm.commitTurns>0){
+      hidden = isHeroWellHiddenFrom(dm);
+      if(hidden){
+        dm.coverTurns = (dm.coverTurns || 0) + 1;
+        if(dm.coverTurns>=AGGRO_BREAK_COVER_TURNS){
+          dm.alertTurns = 0;
+          dm.commitTurns = 0;
+          dm.searchTurns = 0;
+          dm.lastKnownHero = null;
+        } else {
+          dm.alertTurns = Math.max(0, dm.alertTurns-1);
+          dm.commitTurns = Math.max(0, dm.commitTurns-1);
+          dm.searchTurns = Math.max(0, (dm.searchTurns || 0) - 1);
+        }
+      } else {
+        dm.coverTurns = 0;
+        dm.lastKnownHero = {x:G.hero.x, z:G.hero.z};
+        dm.searchTurns = Math.max(dm.searchTurns || 0, AGGRO_MEMORY_TURNS);
+        dm.alertTurns = Math.max(dm.alertTurns, 1);
+        dm.commitTurns = Math.max(dm.commitTurns, 2);
       }
+    } else {
+      dm.coverTurns = 0;
     }
 
     let chosen={x:dm.x,z:dm.z};
@@ -4329,12 +4384,14 @@ function daemonTurn(){
     } else if(dm.freezeTurns && dm.freezeTurns>0){
       dm.freezeTurns--;
     } else if(sees){
-      const chase = getChaseTarget(dm, occupied);
       const valid = getLegalMoves(dm, occupied);
-      chosen = pickImperfectAlertMove(dm, valid, chase);
+      const chase = getChaseTarget(dm, occupied);
+      chosen = pickAggroMove(dm, valid, G.hero, chase);
     } else if((dm.searchTurns||0)>0 && dm.lastKnownHero){
       const valid = getLegalMoves(dm, occupied);
-      chosen = pickSearchMove(dm, valid, dm.lastKnownHero) || choosePatrolTarget(dm, occupied);
+      const target = hidden ? dm.lastKnownHero : {x:G.hero.x,z:G.hero.z};
+      const chase = getChaseTargetTo(dm, target, occupied);
+      chosen = pickAggroMove(dm, valid, target, chase) || pickSearchMove(dm, valid, dm.lastKnownHero) || choosePatrolTarget(dm, occupied);
     } else {
       chosen = choosePatrolTarget(dm, occupied);
     }
