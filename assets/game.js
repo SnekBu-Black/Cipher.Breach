@@ -475,6 +475,18 @@ const pick = arr => arr[Math.floor(Math.random()*arr.length)];
 const shuffle = a => { for(let i=a.length-1;i>0;i--){const j=~~(Math.random()*(i+1)); [a[i],a[j]]=[a[j],a[i]];} return a; };
 const gToW = (gx,gz)=>({x:(gx-((GS-1)/2))*SP,y:0,z:(gz-((GS-1)/2))*SP});
 const keyOf = (x,z)=>`${x},${z}`;
+function isEditableElement(el){
+  if(!el || typeof el.tagName!=='string') return false;
+  if(el.isContentEditable) return true;
+  const tag = el.tagName.toUpperCase();
+  if(tag==='TEXTAREA' || tag==='SELECT') return true;
+  if(tag!=='INPUT') return false;
+  const type = (el.getAttribute('type') || 'text').toLowerCase();
+  return !['button','checkbox','color','file','hidden','image','radio','range','reset','submit'].includes(type);
+}
+function isTextEntryContext(target){
+  return isEditableElement(target) || isEditableElement(document.activeElement);
+}
 const setDisplay = (id, value) => { const el=$(id); if(el) el.style.display=value; return el; };
 const setText = (id, value) => { const el=$(id); if(el) el.textContent=value; return el; };
 const setHtml = (id, value) => { const el=$(id); if(el) el.innerHTML=value; return el; };
@@ -3679,7 +3691,7 @@ function renderBattlePanel(){
       ${artifactBlock}
       ${referenceBlock}
       <div id="battle-hint" class="cp-feedback hint">التلميحات مجانية هنا. استخدمها حتى تفهم الفكرة.</div>
-      <input id="battle-input" class="cp-input" placeholder="اكتب الإجابة هنا" autocomplete="off" />
+      <input id="battle-input" class="cp-input" placeholder="اكتب الإجابة هنا" autocomplete="off" autocorrect="off" autocapitalize="characters" spellcheck="false" />
       <div class="cp-action">
         <button class="cp-btn" onclick="requestHint()">تلميح</button>
         <button class="cp-btn" onclick="submitBattle()">تأكيد</button>
@@ -3764,7 +3776,7 @@ function renderBattlePanel(){
     ${artifactBlock}
     ${referenceBlock}
     <div id="battle-hint" class="cp-feedback hint">صندوق التلميح: عند الطلب سيكلفك ${HINT_DAMAGE} HP.</div>
-    <input id="battle-input" class="cp-input" placeholder="اكتب الإجابة هنا" autocomplete="off" />
+    <input id="battle-input" class="cp-input" placeholder="اكتب الإجابة هنا" autocomplete="off" autocorrect="off" autocapitalize="characters" spellcheck="false" />
     ${actionButtons}`;
   const input=document.getElementById('battle-input');
   input.focus();
@@ -4506,6 +4518,7 @@ if ('serviceWorker' in navigator) {
 // Left is dx=-1 and right is dx=+1. This avoids RTL layout flipping the controls.
 document.addEventListener('keydown',e=>{
   if(!isFlexVisible('hud')) return;
+  if(isTextEntryContext(e.target)) return;
   const key=e.key.toLowerCase();
   if(e.key==='Tab'){
     e.preventDefault();
