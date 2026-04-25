@@ -12,8 +12,8 @@ const RETREAT_FREEZE_TURNS = 4;
 const ROOK_SIGHT_RANGE = 4;
 const BISHOP_SIGHT_RANGE = 4;
 const ROOK_STEP_LIMIT = 2;
-const AGGRO_MEMORY_TURNS = 6;
-const AGGRO_BREAK_COVER_TURNS = 2;
+const AGGRO_MEMORY_TURNS = 3;
+const AGGRO_BREAK_COVER_TURNS = 1;
 const ENCOUNTER_TRANSITION_MS = 380;
 const SUCCESS_BEAT_MS = 360;
 const ROOM_CLEAR_BEAT_MS = 520;
@@ -3414,10 +3414,18 @@ function isHeroBehindAdjacentCover(dm){
   });
 }
 
+function hasNearbyCover(x,z){
+  return [
+    {x:x+1,z},{x:x-1,z},{x,z:z+1},{x,z:z-1}
+  ].some(p=>getNodeState(p.x,p.z)===WALL);
+}
+
 function isHeroWellHiddenFrom(dm){
   if(canDaemonSeeHero(dm)) return false;
   if(hasAlignedCoverBetween(dm.x,dm.z,G.hero.x,G.hero.z)) return true;
   const dist=Math.abs(dm.x-G.hero.x)+Math.abs(dm.z-G.hero.z);
+  if(dist>=5 && hasNearbyCover(G.hero.x,G.hero.z)) return true;
+  if(dist>=7) return true;
   return dist>1 && isHeroBehindAdjacentCover(dm);
 }
 
@@ -3473,11 +3481,11 @@ function pickAggroMove(dm, legalMoves, target, preferredMove=null){
       : (Math.abs(move.x-target.x)===Math.abs(move.z-target.z));
     const closing=getDistanceToPoint(dm,move,target)<getDistanceToPoint(dm,{x:dm.x,z:dm.z},target);
     const facing=(Math.sign(move.x-dm.x)===dm.facing.x && Math.sign(move.z-dm.z)===dm.facing.z);
-    let score=dist*8;
+    let score=dist*9;
     if(catches) score-=100;
-    if(preferred) score-=42;
-    if(threatens) score-=24;
-    if(align) score-=8;
+    if(preferred) score-=24;
+    if(threatens) score-=10;
+    if(align) score-=3;
     if(closing) score-=5;
     if(facing) score-=1.2;
     return {move,score};
@@ -4349,7 +4357,7 @@ function daemonTurn(){
     let hidden=false;
     if(sees){
       dm.lastKnownHero = {x:G.hero.x, z:G.hero.z};
-      dm.searchTurns = Math.max(dm.searchTurns || 0, profile.alertTurns + AGGRO_MEMORY_TURNS);
+      dm.searchTurns = Math.max(dm.searchTurns || 0, AGGRO_MEMORY_TURNS);
       dm.alertTurns = Math.max(dm.alertTurns, profile.alertTurns);
       dm.commitTurns = Math.max(dm.commitTurns, profile.commitTurns);
       dm.coverTurns = 0;
@@ -4369,10 +4377,10 @@ function daemonTurn(){
         }
       } else {
         dm.coverTurns = 0;
-        dm.lastKnownHero = {x:G.hero.x, z:G.hero.z};
-        dm.searchTurns = Math.max(dm.searchTurns || 0, AGGRO_MEMORY_TURNS);
-        dm.alertTurns = Math.max(dm.alertTurns, 1);
-        dm.commitTurns = Math.max(dm.commitTurns, 2);
+        dm.alertTurns = Math.max(0, dm.alertTurns-1);
+        dm.commitTurns = Math.max(0, dm.commitTurns-1);
+        dm.searchTurns = Math.max(0, (dm.searchTurns || 0) - 1);
+        if(dm.searchTurns===0) dm.lastKnownHero = null;
       }
     } else {
       dm.coverTurns = 0;
@@ -4389,9 +4397,7 @@ function daemonTurn(){
       chosen = pickAggroMove(dm, valid, G.hero, chase);
     } else if((dm.searchTurns||0)>0 && dm.lastKnownHero){
       const valid = getLegalMoves(dm, occupied);
-      const target = hidden ? dm.lastKnownHero : {x:G.hero.x,z:G.hero.z};
-      const chase = getChaseTargetTo(dm, target, occupied);
-      chosen = pickAggroMove(dm, valid, target, chase) || pickSearchMove(dm, valid, dm.lastKnownHero) || choosePatrolTarget(dm, occupied);
+      chosen = pickSearchMove(dm, valid, dm.lastKnownHero) || choosePatrolTarget(dm, occupied);
     } else {
       chosen = choosePatrolTarget(dm, occupied);
     }
