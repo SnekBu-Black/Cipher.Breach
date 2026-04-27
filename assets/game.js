@@ -299,6 +299,124 @@ const ROOM_DEBRIEF_NOTES = [
   'النافذة الأخيرة انكسرت، والعرش المركزي بات مكشوفًا.'
 ];
 const KEYHOLDER_CALLSIGN = 'حامل المفتاح';
+const ROOM_PUZZLES_EN = [
+  {
+    roomTitle:'Room 1 // Cipher Relay',
+    brief:'Break the short cipher to open the first relay.',
+    prompt:'Use the Caesar cipher.',
+    guide:'Apply the displayed shift to the whole text until the original word returns.',
+    hintCategory:'Related to protection, locks, or hidden messages',
+    concept:'Encryption hides plaintext through a reversible transformation that depends on a key.',
+    lesson:'Caesar cipher is weak, but it shows the core idea of cryptography: data should not be readable unless you know how to reverse the transformation.'
+  },
+  {
+    roomTitle:'Room 2 // Token Cache',
+    brief:'Recover the reversed session word before it disappears from memory.',
+    prompt:'Use Reverse.',
+    guide:'Read the letters backward from the end to the beginning.',
+    hintCategory:'Related to sessions, tokens, or components moving through a connection',
+    concept:'Tokens and sessions are small secrets, but exposing one can give an attacker direct access.',
+    lesson:'Even simple transformations are a reminder that session tokens, cookies, and nonces must be treated as sensitive material, not ordinary text.'
+  },
+  {
+    roomTitle:'Room 3 // Password Vault',
+    brief:'Extract the hidden clue linked to password storage.',
+    prompt:'Use Atbash.',
+    guide:'Atbash mirrors the alphabet: A pairs with Z, B with Y, and so on.',
+    hintCategory:'Related to passwords or identity checks',
+    concept:'Authentication systems should store salted password hashes instead of raw passwords.',
+    lesson:'Argon2id slows offline guessing attacks by forcing every attempt to spend meaningful memory and compute resources.'
+  },
+  {
+    roomTitle:'Room 4 // Identity Gate',
+    brief:'Untangle the pattern to reveal the multi-factor authentication clue.',
+    prompt:'Use Rail Fence.',
+    guide:'Split letters between two alternating rails, then rebuild them in the correct order.',
+    hintCategory:'Related to an extra step or tool in authentication',
+    concept:'Authentication becomes stronger when it uses several independent factors.',
+    lesson:'MFA blocks many account takeovers because a stolen password alone is no longer enough to pass the check.'
+  },
+  {
+    roomTitle:'Room 5 // Payroll Gate',
+    brief:'Wrap the text back around the mental cylinder to reveal the policy word.',
+    prompt:'Use Scytale.',
+    guide:'Place the text into 3 columns, then read the rows to recover the word.',
+    hintCategory:'Related to roles, permissions, or access policies',
+    concept:'Access control policies scale better when permissions are connected to roles.',
+    lesson:'RBAC reduces administrative chaos because teams define roles once instead of manually editing every user on every system.'
+  },
+  {
+    roomTitle:'Room 6 // Contractor Window',
+    brief:'Restore the column order to recover the limited-privilege word.',
+    prompt:'Use Columnar Transposition.',
+    guide:'Write the letters into a short grid, return the columns to their natural order, then read the rows.',
+    hintCategory:'Related to reducing privilege, scope, or duration',
+    concept:'Access should be limited to the smallest useful scope and shortest useful time.',
+    lesson:'Least privilege reduces blast radius. If an account is abused, the attacker inherits only a narrow set of permissions.'
+  }
+];
+const TUTORIAL_PUZZLE_EN = {
+  roomTitle:'Primer // Cipher Gallery',
+  brief:'This quiet gallery introduces the six ciphers one by one without combat or pressure.',
+  prompt:'Choose the training station you want to try and start at your own pace.',
+  methodLabel:'Cipher Gallery',
+  guide:'Walk up to any symbol, then press E or Enter when you are ready.',
+  hintCategory:'Related to learning and exploration',
+  concept:'Here you learn the shape of each cipher and how to think through it before entering the main rooms.',
+  lesson:'After one pass through the gallery, the main run should feel clearer: move, get intercepted, solve, then escape.'
+};
+const TUTORIAL_STORY_BEAT_EN = 'This is a safe space to study the daemons and try all six ciphers one by one, then leave through the exit node when you are done.';
+const TUTORIAL_DAEMON_EXHIBITS_EN = [
+  {
+    tag:'Daemon Brief',
+    title:'ROOK // Lane Guard',
+    body:'Moves in a straight line up to two steps and threatens open lanes. Use walls and corners to break its line before it pins you down.'
+  },
+  {
+    tag:'Daemon Brief',
+    title:'BISHOP // Corner Sniper',
+    body:'Moves diagonally one step, so it punishes exposed diagonal movement and careless positioning near corners.'
+  }
+];
+const ROOM_STORY_BEATS_EN = [
+  'The first relay is still responding. Open the path before the noise layer locks it again.',
+  'The session store is leaking temporary secrets. Recover the word and cross before the daemons reseal it.',
+  'The password vault still exposes a recovery clue. Take it and keep moving through the network.',
+  'The identity gate checks every step. Break its pattern and prove your identity still holds.',
+  'The permission corridor folds its access logs inward. Open it to track the keyholder through the sector.',
+  'The final window is narrowing. Extract the exit key and finish the escape before the frame collapses.'
+];
+const ROOM_DEBRIEF_NOTES_EN = [
+  'The relay returned to a stable state after the first layer broke.',
+  'The session leak stopped, but access residue is still active deeper inside.',
+  'The vault lost cohesion, and recovery clues are surfacing across the network.',
+  'The identity gate fell, making the path forward faster and clearer.',
+  'The permission corridor opened, and the access logs started tracking the guard withdrawal.',
+  'The final window broke, exposing the central throne.'
+];
+const ROOM_DEBRIEF_HEADLINES_EN = [
+  'Break Caesar to escape the first room',
+  'Reverse the letters to escape the second room',
+  'Use Atbash to reveal the password clue and escape the third room',
+  'Untangle the rail pattern to escape the fourth room',
+  'Rewrap the text to recover the access word and escape the fifth room',
+  'Restore the columns to escape the sixth room'
+];
+const ROOM_GAMEPLAY_CONTEXT_EN = [
+  'Caesar cipher shifts alphabet letters backward by the shown key.',
+  'Reverse is solved by reading the letters from end to start until the original word returns.',
+  'Atbash mirrors the alphabet so the first letter matches the last, the second matches the one before it, and so on.',
+  'Rail Fence splits letters between two alternating rails, then asks you to rebuild the original order.',
+  'Scytale places letters into three columns, then reads rows to recover the word.',
+  'Columnar asks you to return scrambled columns to their correct order, then read the rows.'
+];
+const BOSS_PROFILE_EN = {
+  name:'Core Tyrant',
+  title:'Throne Chamber',
+  intro:'The final chamber opened. The Core Tyrant will now test you across all six ciphers.',
+  defeat:'The Core Tyrant fell, and the exit route finally opened.'
+};
+const KEYHOLDER_CALLSIGN_EN = 'Keyholder';
 
 const COVER_SHAPES = [
   [{x:0,z:0},{x:1,z:0}],
@@ -393,8 +511,9 @@ let bossSceneState = {active:false, introActive:false, archon:null, throne:null,
 let camFollow = {x:0,z:0};
 let UI = {tutorialChatAnchor:null, hpFloatTimer:null, swipe:null};
 let FX = {cameraKick:0, engageTimer:null, beatTimer:null, travelTimer:null, engageActive:false, beatActive:false, travelActive:false, audioCtx:null, logFlashTimer:null};
-let defaultTitleStoryHtml = '';
+let activeLang = (()=>{ try { return localStorage.getItem('cipherLanguage') || 'ar'; } catch { return 'ar'; } })();
 const RUNNER_NAME = 'المُرسَل';
+const RUNNER_NAME_EN = 'the Runner';
 const ROOM_STORY_BEATS = [
   'المرحّل الأول ما زال يستجيب. افتح المسار قبل أن تغلقه طبقة التشويش.',
   'مخزن الجلسات ينزف أسرارًا مؤقتة. استعد الكلمة واعبر قبل أن تعيد الديمونات قفله.',
@@ -496,6 +615,346 @@ const hideDisplays = ids => ids.forEach(id=>setDisplay(id,'none'));
 const RESULT_SCREENS = ['battle-screen','s-explain','s-pause','s-room-brief','s-tutorial-exit'];
 const ACTIVE_RUN_SCREENS = ['battle-screen','s-explain','s-over','s-win','s-pause','s-tutorial-exit','s-room-brief'];
 const SESSION_BOOT_SCREENS = ['s-title','s-over','s-win','s-explain','s-pause','s-tutorial-exit','s-room-brief'];
+const UI_TEXT = {
+  ar:{
+    titleStory:'أنت المُرسَل، عالق داخل شبكة أمنية خربانة، وكل غرفة فيها شيفرة لازم تفكها.<br>خذ المفتاح واهرب من كل قطاع قبل ما يمسكك الحراس.<br>وإذا وصلت للنهاية، بتقابل راس البلا.',
+    startBtn:'[ ابدأ ] دخول الشبكة',
+    tutorialBtn:'[ تدريب ] محاكاة تمهيدية',
+    menuNote:'تعرّف على الديمونات، جرّب الشيفرات الست، ثم ابدأ المهمة الأساسية وأنت فاهم النظام.',
+    room:'الغرفة',
+    health:'الصحة',
+    exitKey:'مفتاح الخروج',
+    keySeek:'ابحث عن حامل المفتاح',
+    turns:'الأدوار',
+    pause:'Tab | إيقاف',
+    interact:'تفاعل',
+    pauseShort:'إيقاف',
+    tutorialTag:'التدريب',
+    tutorialTitle:'دليل التدريب',
+    battleTitle:'واجهة التحدي',
+    battleSub:'تم اعتراضك بواسطة ديمون',
+    engageTitle:'تم اعتراضك',
+    engageSub:'استعد للاشتباك القصير.',
+    statusClearTitle:'تم فتح المسار',
+    statusClearSub:'المشهد يلتقط أنفاسه قبل العودة للحركة.',
+    travelTitle:'الانتقال إلى الغرفة التالية',
+    travelSub:'تتدفق الرموز عبر الممرات قبل تثبيت القطاع الجديد.',
+    explainEyebrow:'مراجعة اللغز',
+    explainTitle:'الدرس الأمني',
+    continue:'متابعة',
+    pauseKicker:'إيقاف',
+    pauseTitle:'تم إيقاف التشغيل',
+    pauseCopy:'تم تجميد الحركة مؤقتًا. يمكنك العودة إلى الجولة أو الخروج إلى القائمة الرئيسية.',
+    pauseQuit:'الخروج إلى القائمة',
+    tutorialExitKicker:'إنهاء التدريب',
+    tutorialExitTitle:'انتهى التدريب الآن',
+    tutorialExitCopy:'المعرض التمهيدي أدى دوره. ابدأ المهمة الأساسية مباشرة لو أنك جاهز، أو عد إلى القائمة الرئيسية.',
+    tutorialExitContinue:'استمر في التدريب',
+    tutorialExitMenu:'العودة للقائمة',
+    tutorialExitStart:'ابدأ المهمة',
+    overTitle:'[ انتهى الاتصال ]',
+    winTitle:'[ هروب ناجح ]',
+    roomBriefKicker:'MISSION DEBRIEF',
+    roomBriefStart:'ابدأ الاختراق',
+    roomBriefContinue:'تابع المهمة',
+    roomBriefMethod:'الطريقة',
+    roomBriefPlay:'طريقة اللعب',
+    roomBriefGameContext:'سياق اللعبة',
+    roomBriefSecurity:'المفهوم الامني الاصلي',
+    roomBriefPlayText:'تحرك بهدوء، استغل الجدران والزوايا، ولا تترك الديمونز تقطع عليك الطريق.',
+    roomBriefFallback:'تابع المهمة للهروب من الغرفة {room}',
+    tutorialExitNodeTag:'بوابة الخروج',
+    tutorialExitNodeTitle:'بوابة إنهاء التدريب',
+    tutorialExitNodeBody:'هذه العقدة لا تقفز بك مباشرة إلى الغرفة الأولى. اضغط E أو Enter لفتح خيارات البدء أو العودة إلى القائمة.',
+    daemonBrief:'تعريف الديمون',
+    statusOk:'نجاح',
+    statusGold:'مفتاح',
+    statusClear:'غرفة',
+    intercept:'اعتراض',
+    daemonPinned:'تم تثبيت الديمون',
+    keyPinned:'تم تثبيت {name}',
+    keyEncounter:'اشتباك قصير. هذا هو حامل المفتاح الفعلي في هذا القطاع.',
+    daemonEncounter:'الواجهة تنفتح الآن. اقرأ الأثر بسرعة ثم أرسل الحل.',
+    freeTraining:'تدريب حر',
+    practiceOverlay:'{label} // تدريب بلا ضرر ولا مؤقت.',
+    challengeInterface:'واجهة التحدي',
+    keyDetected:'تم رصد {name}. حل التحدي لتأمين مفتاح الخروج.',
+    daemonDetected:'تم الاشتباك مع الديمون. حل التحدي قبل أن يغلق المسار.',
+    practiceNotice:'وضع تدريبي: هذه المحطة لا تسبب ضررًا، ويمكنك إعادة المحاولة قدر ما تريد.',
+    method:'الطريقة',
+    key:'المفتاح',
+    trainingPrefix:'تدريب {label}',
+    freeHint:'كل ضغطة على التلميح تكشف حرفًا جديدًا من الحل هنا مجانًا.',
+    paidHint:'كل ضغطة على التلميح تكشف حرفًا جديدًا من الحل وتكلفك {damage} HP.',
+    answerPlaceholder:'اكتب الإجابة هنا',
+    hintBtn:'تلميح',
+    submitBtn:'إرسال',
+    closeBtn:'إغلاق',
+    retreatBtn:'انسحاب',
+    target:'الهدف',
+    piece:'القطعة',
+    timer:'المؤقت',
+    coreRole:'نواة العرش',
+    keyRole:'حامل المفتاح',
+    daemonRole:'ديمون معترض',
+    finalSequence:'FINAL SEQUENCE',
+    bossLayerText:'كل شيفرة صحيحة تكسر طبقة من النواة. الشيفرة السادسة وحدها تنهي العرش.',
+    phase:'المرحلة',
+    coreHealth:'سلامة النواة',
+    correctAnswer:'الحل الصحيح',
+    securityConcept:'المفهوم الأمني',
+    whyMatters:'لماذا يهم',
+    challengeText:'نص التحدي',
+    explainSuccess:'تم تجاوز التحدي بنجاح.',
+    explainTimeout:'استنزفك المؤقت قبل إرسال الحل الصحيح.',
+    explainClosed:'أُغلقت المواجهة قبل حل التحدي بنجاح.',
+    explainSolvedKey:'حللت اللغز، وأسقطت حامل المفتاح، واستحوذت على مفتاح الخروج.',
+    explainSolvedDaemon:'حللت اللغز وأزلت الديمون المعترض من الغرفة.',
+    explainCorrectShown:'يظهر الحل الصحيح أدناه حتى يبقى المفهوم الأمني واضحًا بعد المواجهة.',
+    practiceSolvedTitle:'اكتمل تدريب {label}',
+    practiceSolvedSub:'يمكنك إعادة التدريب متى شئت أو الانتقال إلى تدريب آخر داخل المعرض.',
+    keyDroppedTitle:'تم إسقاط حامل المفتاح',
+    pathOpenedTitle:'تم فتح المسار',
+    keyDroppedSub:'{name} سقط. دخل القطاع في حالة extraction؛ اتجه الآن إلى عقدة الخروج.',
+    pathOpenedSub:'تم إخماد الديمون وعادت الحركة إلى الشبكة.',
+    wrongPractice:'ليست الإجابة الصحيحة بعد. جرّب مرة أخرى أو خذ تلميحًا مجانيًا.',
+    solvedKeyResult:'حللت التحدي الأمني واستحوذت على مفتاح الخروج.',
+    solvedPathResult:'حللت التحدي الأمني وفتحت الطريق.',
+    timeoutResult:'انتهت دورة المؤقت وأصابك الديمون بـ {damage} HP حتى سقطت.',
+    retreatResult:'انسحبت من المواجهة، خسرت {damage} HP، وتعطّل الديمون لمدة {turns} أدوار قبل أن يتحرك مجددًا.',
+    roomSecured:'غرفة مؤمّنة',
+    layersBroken:'انكسرت الطبقات الست. النواة المركزية بدأت بالظهور.',
+    roomSafe:'الغرفة {room} أصبحت آمنة. {note}',
+    throneWake:'استيقاظ العرش',
+    throneApproach:'الانتقال إلى قاعة العرش',
+    throneApproachSub:'انكسرت الطبقات الست، وبقيت النواة وحدها في آخر الغرفة. هذه المرة سترى صاحب العرش قبل أن يبدأ التحدي.',
+    bossRises:'{name} يقوم من العرش',
+    bossClashSub:'توقفت المطاردة التقليدية. النواة خرجت بنفسها لتختبرك مباشرة في التسلسل الأخير.',
+    throneBattle:'عرش الشيفرات',
+    bossFall:'سقوط {name}',
+    bossFinal:'{defeat} الشيفرة الأخيرة كانت {method}.',
+    bossHit:'ضربة على النواة',
+    bossHitSub:'أصبت {name} بشيفرة {method}. بقي {hp} من {max}.',
+    tutorialStartTitle:'محاكاة تمهيدية',
+    tutorialStartSub:'هذا معرض آمن: كل رمز يحمل شكلًا صغيرًا يلمّح إلى شيفرته، والاقتراب من أي رمز أو من ROOK وBISHOP يفتح شرحًا سريعًا فوقه.',
+    overTutorial:'تعطلت <span>{runner}</span> داخل محاكاة التهيئة قبل بلوغ عقدة الخروج.<br>مجموع الأدوار: <span>{turns}</span>',
+    overRun:'سقط <span>{runner}</span> قبل بلوغ بوابة الخروج.<br>وصلت إلى الغرفة <span>{room}</span> من {count}<br>مجموع الأدوار: <span>{turns}</span>',
+    retryTraining:'↺ إعادة التدريب',
+    retryRun:'↺ إعادة المحاولة',
+    winTutorialTitle:'[ محاكاة مكتملة ]',
+    winRunTitle:'[ هروب ناجح ]',
+    winTutorial:'أكمل <span>{runner}</span> مسار التهيئة واستوعب الحلقة الأساسية: حركة، اعتراض، حل، ثم خروج.<br>مجموع الأدوار: <span>{turns}</span>',
+    winRun:'استعاد <span>{runner}</span> مفتاح الخروج وأسقط <span>{boss}</span> بعد كسر القطاعات الستة.<br>مجموع الأدوار: <span>{turns}</span>',
+    mainMenu:'العودة إلى القائمة الرئيسية'
+  },
+  en:{
+    titleStory:'You are the Runner, trapped inside a broken security network. Every room hides a cipher you must break.<br>Take the key and escape each sector before the guards catch you.<br>If you reach the end, the Core Tyrant is waiting.',
+    startBtn:'[ START ] Enter the Network',
+    tutorialBtn:'[ TRAINING ] Primer Simulation',
+    menuNote:'Study the daemons, try all six ciphers, then start the main mission with the system already understood.',
+    room:'Room',
+    health:'Health',
+    exitKey:'Exit Key',
+    keySeek:'Find the keyholder',
+    turns:'Turns',
+    pause:'Tab | Pause',
+    interact:'Interact',
+    pauseShort:'Pause',
+    tutorialTag:'Training',
+    tutorialTitle:'Training Guide',
+    battleTitle:'Challenge Interface',
+    battleSub:'Intercepted by a daemon',
+    engageTitle:'Intercepted',
+    engageSub:'Prepare for a short breach.',
+    statusClearTitle:'Path opened',
+    statusClearSub:'The scene catches its breath before movement resumes.',
+    travelTitle:'Moving to the next room',
+    travelSub:'Code streams through the corridors before the new sector locks in.',
+    explainEyebrow:'Puzzle Review',
+    explainTitle:'Security Lesson',
+    continue:'Continue',
+    pauseKicker:'Pause',
+    pauseTitle:'Run Paused',
+    pauseCopy:'Movement is frozen for now. You can return to the run or exit to the main menu.',
+    pauseQuit:'Exit to Menu',
+    tutorialExitKicker:'End Training',
+    tutorialExitTitle:'Training is complete',
+    tutorialExitCopy:'The primer gallery has done its job. Start the main mission if you are ready, or return to the main menu.',
+    tutorialExitContinue:'Stay in Training',
+    tutorialExitMenu:'Return to Menu',
+    tutorialExitStart:'Start Mission',
+    overTitle:'[ CONNECTION LOST ]',
+    winTitle:'[ ESCAPE COMPLETE ]',
+    roomBriefKicker:'MISSION DEBRIEF',
+    roomBriefStart:'Start Breach',
+    roomBriefContinue:'Continue Mission',
+    roomBriefMethod:'Method',
+    roomBriefPlay:'How to Play',
+    roomBriefGameContext:'Game Context',
+    roomBriefSecurity:'Security Concept',
+    roomBriefPlayText:'Move carefully, use walls and corners, and do not let the daemons cut off your route.',
+    roomBriefFallback:'Continue the mission to escape room {room}',
+    tutorialExitNodeTag:'Exit Gate',
+    tutorialExitNodeTitle:'Training Exit',
+    tutorialExitNodeBody:'This node does not jump straight into the first room. Press E or Enter to open the start or menu options.',
+    daemonBrief:'Daemon Brief',
+    statusOk:'Success',
+    statusGold:'Key',
+    statusClear:'Room',
+    intercept:'Intercept',
+    daemonPinned:'Daemon pinned',
+    keyPinned:'{name} pinned',
+    keyEncounter:'Short breach. This is the real keyholder in this sector.',
+    daemonEncounter:'The interface is opening. Read the artifact quickly, then submit the answer.',
+    freeTraining:'Free Training',
+    practiceOverlay:'{label} // Training with no damage and no timer.',
+    challengeInterface:'Challenge Interface',
+    keyDetected:'{name} detected. Solve the challenge to secure the exit key.',
+    daemonDetected:'A daemon intercepted you. Solve the challenge before it closes the route.',
+    practiceNotice:'Training mode: this station deals no damage, and you can retry as much as you want.',
+    method:'Method',
+    key:'Key',
+    trainingPrefix:'Training {label}',
+    freeHint:'Each hint press reveals one more answer letter here for free.',
+    paidHint:'Each hint press reveals one more answer letter and costs {damage} HP.',
+    answerPlaceholder:'Type the answer here',
+    hintBtn:'Hint',
+    submitBtn:'Submit',
+    closeBtn:'Close',
+    retreatBtn:'Retreat',
+    target:'Target',
+    piece:'Piece',
+    timer:'Timer',
+    coreRole:'Throne Core',
+    keyRole:'Keyholder',
+    daemonRole:'Intercepting Daemon',
+    finalSequence:'FINAL SEQUENCE',
+    bossLayerText:'Every correct cipher breaks one core layer. The sixth cipher ends the throne.',
+    phase:'Phase',
+    coreHealth:'Core Integrity',
+    correctAnswer:'Correct Answer',
+    securityConcept:'Security Concept',
+    whyMatters:'Why It Matters',
+    challengeText:'Challenge Text',
+    explainSuccess:'Challenge cleared successfully.',
+    explainTimeout:'The timer drained you before the correct answer was submitted.',
+    explainClosed:'The encounter closed before the challenge was solved.',
+    explainSolvedKey:'You solved the puzzle, dropped the keyholder, and secured the exit key.',
+    explainSolvedDaemon:'You solved the puzzle and removed the intercepting daemon from the room.',
+    explainCorrectShown:'The correct answer is shown below so the security concept stays clear after the encounter.',
+    practiceSolvedTitle:'{label} training complete',
+    practiceSolvedSub:'You can repeat this station whenever you want or move to another one inside the gallery.',
+    keyDroppedTitle:'Keyholder down',
+    pathOpenedTitle:'Path opened',
+    keyDroppedSub:'{name} fell. The sector entered extraction; head to the exit node now.',
+    pathOpenedSub:'The daemon was suppressed and movement returned to the network.',
+    wrongPractice:'Not the right answer yet. Try again or take a free hint.',
+    solvedKeyResult:'You solved the security challenge and secured the exit key.',
+    solvedPathResult:'You solved the security challenge and opened the path.',
+    timeoutResult:'The timer cycle ended and the daemon hit you for {damage} HP until you fell.',
+    retreatResult:'You retreated from the encounter, lost {damage} HP, and disabled the daemon for {turns} turns before it moves again.',
+    roomSecured:'Room secured',
+    layersBroken:'All six layers broke. The central core is starting to appear.',
+    roomSafe:'Room {room} is safe. {note}',
+    throneWake:'Throne waking',
+    throneApproach:'Moving to the Throne Chamber',
+    throneApproachSub:'The six layers broke, and only the core remains in the final room. This time you will see the owner of the throne before the challenge begins.',
+    bossRises:'{name} rises from the throne',
+    bossClashSub:'The normal chase has stopped. The core came out to test you directly in the final sequence.',
+    throneBattle:'Throne of Ciphers',
+    bossFall:'{name} falls',
+    bossFinal:'{defeat} The final cipher was {method}.',
+    bossHit:'Core hit',
+    bossHitSub:'You struck {name} with {method}. {hp} of {max} layers remain.',
+    tutorialStartTitle:'Primer Simulation',
+    tutorialStartSub:'This is a safe gallery: each symbol hints at its cipher, and approaching any symbol, ROOK, or BISHOP opens a quick explanation above it.',
+    overTutorial:'<span>{runner}</span> broke down inside the primer simulation before reaching the exit node.<br>Total turns: <span>{turns}</span>',
+    overRun:'<span>{runner}</span> fell before reaching the exit gate.<br>Reached room <span>{room}</span> of {count}<br>Total turns: <span>{turns}</span>',
+    retryTraining:'↺ Restart Training',
+    retryRun:'↺ Retry',
+    winTutorialTitle:'[ SIMULATION COMPLETE ]',
+    winRunTitle:'[ ESCAPE COMPLETE ]',
+    winTutorial:'<span>{runner}</span> completed the primer and understood the core loop: move, intercept, solve, then exit.<br>Total turns: <span>{turns}</span>',
+    winRun:'<span>{runner}</span> recovered the exit key and defeated <span>{boss}</span> after breaking all six sectors.<br>Total turns: <span>{turns}</span>',
+    mainMenu:'Return to Main Menu'
+  }
+};
+
+function isEnglish(){
+  return activeLang === 'en';
+}
+
+function textFor(key){
+  return UI_TEXT[activeLang]?.[key] ?? UI_TEXT.ar[key] ?? key;
+}
+
+function fillText(key, values={}){
+  return textFor(key).replace(/\{(\w+)\}/g, (_, name)=>values[name] ?? '');
+}
+
+function getRunnerName(){
+  return isEnglish() ? RUNNER_NAME_EN : RUNNER_NAME;
+}
+
+function getBossProfile(){
+  return isEnglish() ? BOSS_PROFILE_EN : BOSS_PROFILE;
+}
+
+function setLanguage(lang){
+  activeLang = lang === 'en' ? 'en' : 'ar';
+  try { localStorage.setItem('cipherLanguage', activeLang); } catch {}
+  applyLanguage();
+}
+
+function applyLanguage(){
+  if(activeLang !== 'en') activeLang = 'ar';
+  const dir = isEnglish() ? 'ltr' : 'rtl';
+  document.documentElement.lang = activeLang;
+  document.documentElement.dir = dir;
+  if(document.body) document.body.dir = dir;
+  setHtml('title-story', textFor('titleStory'));
+  setText('start-btn', textFor('startBtn'));
+  setText('tutorial-btn', textFor('tutorialBtn'));
+  setText('menu-note', textFor('menuNote'));
+  setText('h-room-label', textFor('room'));
+  setText('h-health-label', textFor('health'));
+  setText('h-key-label', textFor('exitKey'));
+  setText('h-turns-label', textFor('turns'));
+  setText('desktop-pause-btn', textFor('pause'));
+  setText('mobile-action', textFor('interact'));
+  setText('mobile-pause', textFor('pauseShort'));
+  setText('tutorial-chat-tag', textFor('tutorialTag'));
+  setText('tutorial-chat-title', textFor('tutorialTitle'));
+  setText('battle-title', textFor('battleTitle'));
+  setText('battle-sub', textFor('battleSub'));
+  setText('engage-title', textFor('engageTitle'));
+  setText('engage-sub', textFor('engageSub'));
+  setText('status-title', textFor('statusClearTitle'));
+  setText('status-sub', textFor('statusClearSub'));
+  setText('travel-title', textFor('travelTitle'));
+  setText('travel-sub', textFor('travelSub'));
+  setText('explain-eyebrow', textFor('explainEyebrow'));
+  setText('explain-title', textFor('explainTitle'));
+  setText('explain-continue-btn', textFor('continue'));
+  setText('pause-kicker', textFor('pauseKicker'));
+  setText('pause-title', textFor('pauseTitle'));
+  setText('pause-copy', textFor('pauseCopy'));
+  setText('pause-quit-btn', textFor('pauseQuit'));
+  setText('pause-resume-btn', textFor('continue'));
+  setText('tutorial-exit-kicker', textFor('tutorialExitKicker'));
+  setText('tutorial-exit-title', textFor('tutorialExitTitle'));
+  setText('tutorial-exit-copy', textFor('tutorialExitCopy'));
+  setText('tutorial-exit-continue-btn', textFor('tutorialExitContinue'));
+  setText('tutorial-exit-menu-btn', textFor('tutorialExitMenu'));
+  setText('tutorial-exit-start-btn', textFor('tutorialExitStart'));
+  setText('over-title', textFor('overTitle'));
+  setText('win-title', textFor('winTitle'));
+  document.querySelectorAll('.lang-btn').forEach(btn=>{
+    btn.classList.toggle('active', btn.dataset.lang === activeLang);
+  });
+  if(G && Number.isFinite(G.turns)) updateHud();
+  refreshMatrixRain();
+}
 
 function hideAnimatedScreen(id){
   const screen=$(id);
@@ -714,9 +1173,9 @@ function updateTutorialChat(){
   if(G?.tutorialPrompt?.type==='exit'){
     const exitNode = G.nodes.find(n=>n.x===8 && n.z===0);
     setTutorialChat(
-      'بوابة الخروج',
-      'بوابة إنهاء التدريب',
-      'هذه العقدة لا تقفز بك مباشرة إلى الغرفة الأولى. اضغط E أو Enter لفتح خيارات البدء أو العودة إلى القائمة.',
+      textFor('tutorialExitNodeTag'),
+      textFor('tutorialExitNodeTitle'),
+      textFor('tutorialExitNodeBody'),
       exitNode?.mesh ? {kind:'object', object:exitNode.mesh, offsetY:1.05} : {kind:'world', position:new THREE.Vector3(gToW(8,0).x,1.05,gToW(8,0).z)}
     );
     return;
@@ -737,7 +1196,7 @@ function updateTutorialChat(){
   const exhibit=getNearbyTutorialExhibit();
   if(exhibit){
     setTutorialChat(
-      exhibit.tag || 'تعريف الديمون',
+      exhibit.tag || textFor('daemonBrief'),
       exhibit.title,
       exhibit.body,
       {kind:'object', object:exhibit.group, offsetY:1.7}
@@ -801,9 +1260,7 @@ function returnToMainMenu(){
   hideDisplays(ACTIVE_RUN_SCREENS);
   setDisplay('hud','none');
   hideTutorialChat();
-  if(defaultTitleStoryHtml){
-    document.querySelector('.title-story').innerHTML = defaultTitleStoryHtml;
-  }
+  applyLanguage();
   setDisplay('s-title','flex');
   refreshMatrixRain();
 }
@@ -866,7 +1323,7 @@ function triggerRoomTransmission(room){
   if(!msg) return;
   G.inputLocked=true;
   triggerStatusBeat(
-    `إرسال القطاع ${String(room).padStart(2,'0')}`,
+    isEnglish() ? `Sector ${String(room).padStart(2,'0')} transmission` : `إرسال القطاع ${String(room).padStart(2,'0')}`,
     msg,
     'gold',
     520,
@@ -935,7 +1392,10 @@ function buildTutorialRoomDecor(theme, anchors, makeGroup){
     g.add(ring);
     g.rotation.y = idx % 2 === 0 ? Math.PI/5 : -Math.PI/5;
   });
-  G.tutorialExhibits = TUTORIAL_DAEMON_EXHIBITS.map(exhibit=>({
+  const exhibits = isEnglish()
+    ? TUTORIAL_DAEMON_EXHIBITS.map((exhibit, idx)=>({...exhibit, ...(TUTORIAL_DAEMON_EXHIBITS_EN[idx] || {})}))
+    : TUTORIAL_DAEMON_EXHIBITS;
+  G.tutorialExhibits = exhibits.map(exhibit=>({
     ...exhibit,
     group:addTutorialDaemonExhibit(exhibit, theme)
   }));
@@ -1292,15 +1752,26 @@ function getDaemonProfile(dm){
   return DAEMON_PERSONALITIES[dm?.personality] || DAEMON_PERSONALITIES.default;
 }
 
+function localizeRoomPuzzle(base, roomIdx){
+  if(!isEnglish()) return base;
+  return {...base, ...(ROOM_PUZZLES_EN[roomIdx] || {})};
+}
+
+function getTutorialPuzzle(){
+  return isEnglish() ? {...TUTORIAL_PUZZLE, ...TUTORIAL_PUZZLE_EN} : TUTORIAL_PUZZLE;
+}
+
 function getRoomPuzzle(roomIdx){
-  if(isTutorialMode()) return TUTORIAL_PUZZLE;
-  return ROOM_PUZZLES[roomIdx] || ROOM_PUZZLES[0];
+  if(isTutorialMode()) return getTutorialPuzzle();
+  return localizeRoomPuzzle(ROOM_PUZZLES[roomIdx] || ROOM_PUZZLES[0], roomIdx);
 }
 
 function getRoomStoryBeat(room){
   return isTutorialMode()
-    ? TUTORIAL_STORY_BEAT
-    : (ROOM_STORY_BEATS[room-1] || 'استمر في التقدم داخل المصفوفة وابحث عن حامل المفتاح.');
+    ? (isEnglish() ? TUTORIAL_STORY_BEAT_EN : TUTORIAL_STORY_BEAT)
+    : (isEnglish()
+      ? (ROOM_STORY_BEATS_EN[room-1] || 'Keep moving through the matrix and find the keyholder.')
+      : (ROOM_STORY_BEATS[room-1] || 'استمر في التقدم داخل المصفوفة وابحث عن حامل المفتاح.'));
 }
 
 function getRoomPatrols(room){
@@ -1312,14 +1783,16 @@ function getRoomTransmission(room){
 }
 
 function getRoomDebrief(room){
-  return ROOM_DEBRIEF_NOTES[(Math.max(1, room) - 1) % ROOM_DEBRIEF_NOTES.length];
+  const notes = isEnglish() ? ROOM_DEBRIEF_NOTES_EN : ROOM_DEBRIEF_NOTES;
+  return notes[(Math.max(1, room) - 1) % notes.length];
 }
 
 function getKeyholderCallsign(room){
-  return KEYHOLDER_CALLSIGN;
+  return isEnglish() ? KEYHOLDER_CALLSIGN_EN : KEYHOLDER_CALLSIGN;
 }
 
 function getRoomDebriefHeadline(room, base){
+  if(isEnglish()) return ROOM_DEBRIEF_HEADLINES_EN[room-1] || base?.brief || fillText('roomBriefFallback',{room});
   const custom = [
     'فك شفرة قيصر للهروب من الغرفة الاولى',
     'اعكس ترتيب الحروف للهروب من الغرفة الثانية',
@@ -1332,6 +1805,7 @@ function getRoomDebriefHeadline(room, base){
 }
 
 function getRoomGameplayContext(room, base){
+  if(isEnglish()) return ROOM_GAMEPLAY_CONTEXT_EN[room-1] || base?.guide || '';
   const custom = [
     'شفرة قيصر تعتمد على ازاحة الحروف الابجدية للخلف بناء على المفتاح المعطى',
     'Reverse يعتمد على قراءة الحروف من النهاية الى البداية حتى تستعيد الكلمة الصحيحة',
@@ -1345,10 +1819,10 @@ function getRoomGameplayContext(room, base){
 
 function buildRoomBriefGrid(base, room){
   const cards = [
-    `<div class="room-brief-block"><div class="hlabel">الطريقة</div><div class="room-brief-value">${base.methodLabel || base.domain}</div></div>`,
-    `<div class="room-brief-block"><div class="hlabel">طريقة اللعب</div><div class="room-brief-text">تحرك بهدوء، استغل الجدران والزوايا، ولا تترك الديمونز تقطع عليك الطريق.</div></div>`,
-    `<div class="room-brief-block"><div class="hlabel">سياق اللعبة</div><div class="room-brief-text">${getRoomGameplayContext(room, base)}</div></div>`,
-    `<div class="room-brief-block"><div class="hlabel">المفهوم الامني الاصلي</div><div class="room-brief-text"><strong>${base.domain || ''}</strong><br>${base.concept || ''}</div></div>`
+    `<div class="room-brief-block"><div class="hlabel">${textFor('roomBriefMethod')}</div><div class="room-brief-value">${base.methodLabel || base.domain}</div></div>`,
+    `<div class="room-brief-block"><div class="hlabel">${textFor('roomBriefPlay')}</div><div class="room-brief-text">${textFor('roomBriefPlayText')}</div></div>`,
+    `<div class="room-brief-block"><div class="hlabel">${textFor('roomBriefGameContext')}</div><div class="room-brief-text">${getRoomGameplayContext(room, base)}</div></div>`,
+    `<div class="room-brief-block"><div class="hlabel">${textFor('roomBriefSecurity')}</div><div class="room-brief-text"><strong>${base.domain || ''}</strong><br>${base.concept || ''}</div></div>`
   ];
   return cards.join('');
 }
@@ -1389,8 +1863,10 @@ function showRoomTravel(room, cb=null, options={}){
   G.inputLocked=true;
   FX.travelActive=true;
   kicker.textContent = options.kicker || `SECTOR ${String(room).padStart(2,'0')}`;
-  title.textContent = options.title || `الانتقال إلى ${base.roomTitle}`;
-  sub.textContent = options.sub || `تُعاد صياغة المسارات الآن. القطاع القادم يحمل بصمة ${base.methodLabel || base.domain}.`;
+  title.textContent = options.title || (isEnglish() ? `Moving to ${base.roomTitle}` : `الانتقال إلى ${base.roomTitle}`);
+  sub.textContent = options.sub || (isEnglish()
+    ? `Routes are being reshaped. The next sector carries the signature of ${base.methodLabel || base.domain}.`
+    : `تُعاد صياغة المسارات الآن. القطاع القادم يحمل بصمة ${base.methodLabel || base.domain}.`);
   kicker.style.color = accent2;
   title.style.color = accent;
   sub.style.color = hexToRgba(theme.accent2 || theme.particle || theme.accent || 0x9dd7e6,0.88);
@@ -1422,12 +1898,12 @@ function showRoomBrief(room, onContinue=null){
   roomBriefState.active=true;
   roomBriefState.room=room;
   roomBriefState.onContinue=onContinue;
-  document.getElementById('room-brief-kicker').textContent = 'MISSION DEBRIEF';
+  document.getElementById('room-brief-kicker').textContent = textFor('roomBriefKicker');
   document.getElementById('room-brief-title').textContent = headline;
   document.getElementById('room-brief-copy').textContent = '';
   document.getElementById('room-brief-copy').style.display = 'none';
   document.getElementById('room-brief-grid').innerHTML = buildRoomBriefGrid(base, room);
-  document.getElementById('room-brief-btn').textContent = room===1 ? 'ابدأ الاختراق' : 'تابع المهمة';
+  document.getElementById('room-brief-btn').textContent = room===1 ? textFor('roomBriefStart') : textFor('roomBriefContinue');
   document.getElementById('s-room-brief').style.display='flex';
 }
 
@@ -1483,7 +1959,28 @@ function getNearbyTutorialStation(radius=1.8){
 }
 
 function getTutorialStationCopy(station, interactive=false){
-  const puzzle=ROOM_PUZZLES[station?.roomIdx] || TUTORIAL_PUZZLE;
+  const puzzle=localizeRoomPuzzle(ROOM_PUZZLES[station?.roomIdx] || ROOM_PUZZLES[0], station?.roomIdx || 0);
+  if(isEnglish()){
+    const actionCopy = interactive
+      ? 'Walk up to the symbol and press E or Enter to start training with no damage or timer.'
+      : 'Move closer to the symbol, then press E or Enter to open training.';
+    switch(puzzle.cipherType){
+      case 'caesar':
+        return {tag:'', title:'CAESAR', body:`In Caesar cipher, every letter moves by a fixed number of steps in the alphabet. Once you know the shift, the whole word comes back cleanly. ${actionCopy}`};
+      case 'reverse':
+        return {tag:'', title:'REVERSE', body:`This is the simplest one: the letters are already correct, but the order is flipped. Read from the last letter to the first and the word appears. ${actionCopy}`};
+      case 'atbash':
+        return {tag:'', title:'ATBASH', body:`In Atbash, each letter has a fixed partner from the other side of the alphabet: A with Z, B with Y, and so on. ${actionCopy}`};
+      case 'railfence':
+        return {tag:'', title:'RAIL FENCE', body:`Here the letters do not change, but they split between two rails and are collected again. Trace the zigzag calmly and the original word returns. ${actionCopy}`};
+      case 'scytale':
+        return {tag:'', title:'SCYTALE', body:`Imagine the text placed in a three-column grid and read in a different direction. Put the letters back into columns first, then read the rows. ${actionCopy}`};
+      case 'columnar':
+        return {tag:'', title:'COLUMNAR', body:`In this type, the column chunks arrived in the wrong order. Return each chunk to its correct column, then read the rows normally. ${actionCopy}`};
+      default:
+        return {tag:'', title:station?.label || puzzle.methodLabel || 'Cipher', body:`This is a quick practice station for ${puzzle.methodLabel || 'the current cipher'}. ${actionCopy}`};
+    }
+  }
   const actionCopy = interactive
     ? 'اقترب من الرمز واضغط E أو Enter لبدء التدريب بلا ضرر أو مؤقت.'
     : 'اقترب أكثر من الرمز ثم اضغط E أو Enter لفتح التدريب.';
@@ -1830,11 +2327,11 @@ function triggerEncounter(daemon){
   const keyName = daemon.callsign || getKeyholderCallsign(G.layer);
 
   card.classList.toggle('key', isKey);
-  tag.textContent=isKey ? keyName : 'اعتراض';
-  title.textContent=isKey ? `تم تثبيت ${keyName}` : 'تم تثبيت الديمون';
+  tag.textContent=isKey ? keyName : textFor('intercept');
+  title.textContent=isKey ? fillText('keyPinned',{name:keyName}) : textFor('daemonPinned');
   sub.textContent=isKey
-    ? 'اشتباك قصير. هذا هو حامل المفتاح الفعلي في هذا القطاع.'
-    : 'الواجهة تنفتح الآن. اقرأ الأثر بسرعة ثم أرسل الحل.';
+    ? textFor('keyEncounter')
+    : textFor('daemonEncounter');
   piece.textContent=pieceLabel;
 
   screen.style.display='flex';
@@ -1855,10 +2352,10 @@ function triggerStatusBeat(title, sub, mode='ok', duration=SUCCESS_BEAT_MS, cb=n
   const tag=document.getElementById('status-tag');
   const titleEl=document.getElementById('status-title');
   const subEl=document.getElementById('status-sub');
-  const tagLabels={ok:'نجاح',gold:'مفتاح',clear:'غرفة'};
+  const tagLabels={ok:textFor('statusOk'),gold:textFor('statusGold'),clear:textFor('statusClear')};
   FX.beatActive=true;
   card.className=`status-card ${mode}`;
-  tag.textContent=tagLabels[mode] || 'نجاح';
+  tag.textContent=tagLabels[mode] || textFor('statusOk');
   titleEl.textContent=title;
   subEl.textContent=sub;
   screen.style.display='flex';
@@ -2919,7 +3416,7 @@ function genPuzzle(roomIdx){
 }
 
 function genPracticePuzzle(roomIdx){
-  const base = ROOM_PUZZLES[roomIdx] || ROOM_PUZZLES[0];
+  const base = localizeRoomPuzzle(ROOM_PUZZLES[roomIdx] || ROOM_PUZZLES[0], roomIdx);
   return buildPuzzleInstance(base);
 }
 
@@ -2928,6 +3425,24 @@ function getPuzzleGuide(puzzle){
 }
 
 function getCipherStructureHint(puzzle){
+  if(isEnglish()){
+    switch(puzzle.cipherType){
+      case 'caesar':
+        return 'This is a substitution cipher: every letter changes by the same amount, so look for a fixed pattern across the whole word.';
+      case 'reverse':
+        return 'There is no alphabet swap here. The same letters are correct, but their order is completely reversed.';
+      case 'atbash':
+        return 'Atbash mirrors the alphabet from both ends: every letter has one fixed opposite.';
+      case 'railfence':
+        return 'This is a two-rail transposition. Letters alternate between an upper and lower path before being merged again.';
+      case 'scytale':
+        return 'Think of it as a short grid. Place the characters in a regular shape, then read them in the right direction.';
+      case 'columnar':
+        return 'The letters are intact, but the columns were read in a different order and merged into one line.';
+      default:
+        return 'Break the artifact into small pieces and look for the pattern that stays consistent across the word.';
+    }
+  }
   switch(puzzle.cipherType){
     case 'caesar':
       return 'هذه الشيفرة من نوع substitution: كل حرف يتغير بالمقدار نفسه، لذلك ابحث عن نمط ثابت عبر الكلمة كاملة.';
@@ -2947,6 +3462,24 @@ function getCipherStructureHint(puzzle){
 }
 
 function getCipherKeyHint(puzzle){
+  if(isEnglish()){
+    switch(puzzle.cipherType){
+      case 'caesar':
+        return `The key is ${puzzle.keyLabel}. Shift every letter by the same amount to recover the original text.`;
+      case 'reverse':
+        return 'The key is only the reading direction: start at the last letter and move toward the first.';
+      case 'atbash':
+        return `The key is fixed: ${puzzle.keyLabel}. Use the A↔Z and B↔Y map on every letter.`;
+      case 'railfence':
+        return `The key is ${puzzle.keyLabel}. Split the letters between an upper and lower rail, then rebuild them.`;
+      case 'scytale':
+        return `The key is ${puzzle.keyLabel}. Build a grid with the shown column count, then read rows to recover the word.`;
+      case 'columnar':
+        return `The key is the column order ${puzzle.keyLabel}. Return the columns to natural order before reading.`;
+      default:
+        return 'Use the displayed key directly and keep the transformation type the same.';
+    }
+  }
   switch(puzzle.cipherType){
     case 'caesar':
       return `المفتاح هو ${puzzle.keyLabel}. أزح كل حرف بالمقدار نفسه حتى يعود النص إلى شكله الأصلي.`;
@@ -2968,10 +3501,12 @@ function getCipherKeyHint(puzzle){
 function getCipherProcessHint(puzzle){
   if(puzzle.cipherType==='scytale'){
     const lengths=(puzzle.referenceChunkLengths || []).join('-');
+    if(isEnglish()) return `The artifact length is ${puzzle.artifact.length}. With ${puzzle.referenceColumns} columns, that gives ${puzzle.referenceRows} rows. Split it into column chunks of ${lengths}, return them left to right, then read the rows.`;
     return `طول الأثر ${puzzle.artifact.length}، ومع ${puzzle.referenceColumns} أعمدة فهذا يعني ${puzzle.referenceRows} صفوف. قسّمه ذهنيًا إلى كتل أعمدة بطول ${lengths} ثم أعدها من اليسار إلى اليمين واقرأ الصفوف.`;
   }
   if(puzzle.cipherType==='columnar'){
-    const layout=(puzzle.referenceChunks || []).map((chunk, idx)=>`الكتلة ${idx+1} → العمود ${chunk.colIdx+1}`).join('، ');
+    const layout=(puzzle.referenceChunks || []).map((chunk, idx)=>isEnglish() ? `chunk ${idx+1} → column ${chunk.colIdx+1}` : `الكتلة ${idx+1} → العمود ${chunk.colIdx+1}`).join(isEnglish() ? ', ' : '، ');
+    if(isEnglish()) return `This is not a new grid. These are the same columns after reordering. You have ${puzzle.referenceRows} rows, and the current text arrives as: ${layout}. Return the columns to 1-2-3, then read the rows.`;
     return `هذه ليست شبكة جديدة؛ إنها الأعمدة نفسها بعد إعادة ترتيبها. لديك ${puzzle.referenceRows} صفوف، والنص الحالي يصل بهذه الصورة: ${layout}. بعد إرجاع الأعمدة إلى 1-2-3 اقرأ الصفوف.`;
   }
   return '';
@@ -2979,12 +3514,12 @@ function getCipherProcessHint(puzzle){
 
 function getProgressiveHint(puzzle, step){
   const answer = String(puzzle?.answerLabel || puzzle?.answer || '').toUpperCase();
-  if(!answer) return 'لا يوجد تلميح متاح الآن.';
+  if(!answer) return isEnglish() ? 'No hint is available right now.' : 'لا يوجد تلميح متاح الآن.';
   const revealable = answer
     .split('')
     .map((ch, idx)=>(/[A-Z0-9]/.test(ch) ? idx : -1))
     .filter(idx=>idx>=0);
-  if(!revealable.length) return `الحل: ${answer}`;
+  if(!revealable.length) return isEnglish() ? `Answer: ${answer}` : `الحل: ${answer}`;
 
   battle.hintRevealedIndices = Array.from(new Set(battle.hintRevealedIndices || []))
     .filter(idx=>revealable.includes(idx))
@@ -3003,8 +3538,8 @@ function getProgressiveHint(puzzle, step){
   }).join(' ');
 
   return battle.hintRevealedIndices.length >= revealable.length
-    ? `انكشف الحل كاملًا: ${masked}`
-    : `انكشف حرف جديد: ${masked}`;
+    ? (isEnglish() ? `Full answer revealed: ${masked}` : `انكشف الحل كاملًا: ${masked}`)
+    : (isEnglish() ? `New letter revealed: ${masked}` : `انكشف حرف جديد: ${masked}`);
 }
 
 function formatReferenceChunks(chunks, formatter){
@@ -3021,9 +3556,9 @@ function buildScytaleReference(puzzle){
   );
   return `<div class="caesar-table">
     <div class="cp-hint cp-hint--meta">${cols} COLUMNS / ${rows} ROWS</div>
-    <div class="cp-hint cp-hint--gold">قسّم الأثر أولًا إلى أعمدة بهذا الطول: ${lengths}</div>
+    <div class="cp-hint cp-hint--gold">${isEnglish() ? `First split the artifact into columns with these lengths: ${lengths}` : `قسّم الأثر أولًا إلى أعمدة بهذا الطول: ${lengths}`}</div>
     <div class="cp-hint cp-hint--meta">${chunkText}</div>
-    <div class="cp-hint cp-hint--note">بعد إعادة الكتل إلى الأعمدة 1 ثم 2 ثم 3، اقرأ الصفوف أفقياً.</div>
+    <div class="cp-hint cp-hint--note">${isEnglish() ? 'After returning the chunks to columns 1, 2, then 3, read rows horizontally.' : 'بعد إعادة الكتل إلى الأعمدة 1 ثم 2 ثم 3، اقرأ الصفوف أفقياً.'}</div>
   </div>`;
 }
 
@@ -3036,9 +3571,9 @@ function buildColumnarReference(puzzle){
   );
   return `<div class="caesar-table">
     <div class="cp-hint cp-hint--meta">COLUMN ORDER: ${order.map(idx=>idx+1).join(' - ')} / ${rows} ROWS</div>
-    <div class="cp-hint cp-hint--gold">النص المشفّر خرج ككتل أعمدة بهذا الترتيب:</div>
+    <div class="cp-hint cp-hint--gold">${isEnglish() ? 'The cipher text arrived as column chunks in this order:' : 'النص المشفّر خرج ككتل أعمدة بهذا الترتيب:'}</div>
     <div class="cp-hint cp-hint--meta">${chunkText}</div>
-    <div class="cp-hint cp-hint--note">ضع كل كتلة في عمودها الصحيح ثم اقرأ الصفوف من اليسار إلى اليمين.</div>
+    <div class="cp-hint cp-hint--note">${isEnglish() ? 'Place each chunk in its correct column, then read rows left to right.' : 'ضع كل كتلة في عمودها الصحيح ثم اقرأ الصفوف من اليسار إلى اليمين.'}</div>
   </div>`;
 }
 
@@ -3048,11 +3583,13 @@ function getCipherProcessHintV2(puzzle){
       puzzle.referenceChunks || [],
       chunk=>`C${chunk.colIdx+1}=${chunk.text}`
     );
+    if(isEnglish()) return `Split the text into short columns first: ${chunkText}. Then return the columns to 1, 2, and 3, and read the rows.`;
     return `قسّم النص إلى أعمدة قصيرة أولًا: ${chunkText}. بعد ذلك أعد الأعمدة إلى 1 ثم 2 ثم 3، ثم اقرأ الصفوف.`;
   }
   if(puzzle.cipherType==='columnar'){
-    const layout=(puzzle.referenceChunks || []).map((chunk, idx)=>`الكتلة ${idx+1} للعمود ${chunk.colIdx+1}`).join('، ');
+    const layout=(puzzle.referenceChunks || []).map((chunk, idx)=>isEnglish() ? `chunk ${idx+1} belongs to column ${chunk.colIdx+1}` : `الكتلة ${idx+1} للعمود ${chunk.colIdx+1}`).join(isEnglish() ? ', ' : '، ');
     const lengths=(puzzle.referenceChunkLengths || []).join('-');
+    if(isEnglish()) return `You have ${puzzle.referenceRows} rows, and column lengths are ${lengths}. The mixed reading order is ${puzzle.keyLabel}: ${layout}. Return the columns to 1-2-3, then read the rows.`;
     return `لديك ${puzzle.referenceRows} صفوف، وأطوال الأعمدة ${lengths}. هذا هو ترتيب القراءة بعد الخلط ${puzzle.keyLabel}: ${layout}. أعد الأعمدة إلى 1-2-3 ثم اقرأ الصفوف.`;
   }
   return getCipherProcessHint(puzzle);
@@ -3104,7 +3641,7 @@ function buildScytaleReferenceV2(puzzle){
   return `<div class="caesar-table">
     <div class="cp-hint cp-hint--meta">${cols} COLUMNS / ${rows} ROWS</div>
     ${layoutGrid}
-    <div class="cipher-grid-note">هذا قالب الشبكة فقط. أعد الحروف إلى الأعمدة الثلاثة ثم اقرأ الصفوف أفقيًا.</div>
+    <div class="cipher-grid-note">${isEnglish() ? 'This is only the grid shape. Return the letters to the three columns, then read rows horizontally.' : 'هذا قالب الشبكة فقط. أعد الحروف إلى الأعمدة الثلاثة ثم اقرأ الصفوف أفقيًا.'}</div>
   </div>`;
 }
 
@@ -3116,7 +3653,7 @@ function buildColumnarReferenceV2(puzzle){
   return `<div class="caesar-table">
     <div class="cp-hint cp-hint--meta">READ ORDER: ${order.map(idx=>idx+1).join(' - ')} / ${rows} ROWS</div>
     ${scrambledGrid}
-    <div class="cipher-grid-note">هذه هي الأعمدة كما وصلت بعد الخلط. أعد ترتيبها إلى 1-2-3 ثم اقرأ الصفوف أفقيًا.</div>
+    <div class="cipher-grid-note">${isEnglish() ? 'These are the columns as they arrived after mixing. Reorder them to 1-2-3, then read rows horizontally.' : 'هذه هي الأعمدة كما وصلت بعد الخلط. أعد ترتيبها إلى 1-2-3 ثم اقرأ الصفوف أفقيًا.'}</div>
   </div>`;
 }
 
@@ -3568,7 +4105,7 @@ function startBattleTimer(){
     updateBattleTimerDisplay();
     if(battle.timeLeft<=0){
       heroTakeDamage(BATTLE_TICK_DAMAGE,{deferGameOver:true});
-      log(`// انتهت دورة المؤقت: -${BATTLE_TICK_DAMAGE} HP`,'dmg');
+      log(isEnglish() ? `// Timer cycle ended: -${BATTLE_TICK_DAMAGE} HP` : `// انتهت دورة المؤقت: -${BATTLE_TICK_DAMAGE} HP`,'dmg');
       if(G.hero.hp<=0){
         stopBattleTimer();
         closeBattle(false,{reason:'timeout'});
@@ -3608,7 +4145,7 @@ function openPracticeStation(station){
   battle.puzzle=genPracticePuzzle(station.roomIdx);
   battle.hintStep=0;
   battle.timeLeft=0;
-  showBattleOverlay('تدريب حر', '#00e5ff', `${station.label} // تدريب بلا ضرر ولا مؤقت.`);
+  showBattleOverlay(textFor('freeTraining'), '#00e5ff', fillText('practiceOverlay',{label:station.label}));
   renderBattlePanel();
 }
 
@@ -3670,7 +4207,8 @@ function setupBossChamber(){
   bossSceneState.cameraPos=new THREE.Vector3(wp.x+2.8,5.9,wp.z+3.45);
   bossSceneState.lookAt=new THREE.Vector3(throneFocus.x,1.42,throneFocus.z);
 
-  log(`// ${BOSS_PROFILE.name}: العرش مفتوح الآن. لا مزيد من الحراس بينك وبينه.`,'gold');
+  const bossProfile=getBossProfile();
+  log(isEnglish() ? `// ${bossProfile.name}: the throne is open. No more guards stand between you and it.` : `// ${bossProfile.name}: العرش مفتوح الآن. لا مزيد من الحراس بينك وبينه.`,'gold');
 }
 
 function triggerBossClash(){
@@ -3697,9 +4235,10 @@ function triggerBossClash(){
 
   card.className='engage-card key';
   tag.textContent='THRONE BREACH';
-  title.textContent=`${BOSS_PROFILE.name} يقوم من العرش`;
-  sub.textContent='توقفت المطاردة التقليدية. النواة خرجت بنفسها لتختبرك مباشرة في التسلسل الأخير.';
-  piece.textContent=`${BOSS_PROFILE.name} // FINAL`;
+  const bossProfile=getBossProfile();
+  title.textContent=fillText('bossRises',{name:bossProfile.name});
+  sub.textContent=textFor('bossClashSub');
+  piece.textContent=`${bossProfile.name} // FINAL`;
   screen.style.display='flex';
   screen.offsetWidth;
   screen.classList.add('show');
@@ -3723,15 +4262,16 @@ function startBossEncounter(){
       bossSceneState.riseTimer=setTimeout(()=>{
         bossSceneState.targetStand=1;
         setCameraKick(0.3);
-        log(`// ${BOSS_PROFILE.name} نهض من فوق العرش. الاصطدام وشيك.`,'dmg');
+        const bossProfile=getBossProfile();
+        log(isEnglish() ? `// ${bossProfile.name} rose from the throne. Impact is close.` : `// ${bossProfile.name} نهض من فوق العرش. الاصطدام وشيك.`,'dmg');
         playUiTone(92,260,{type:'sawtooth',gain:0.048,endFreq:72});
       },720);
       bossSceneState.clashTimer=setTimeout(triggerBossClash, 1880);
     },
     {
       kicker:'THRONE APPROACH',
-      title:'الانتقال إلى قاعة العرش',
-      sub:'انكسرت الطبقات الست، وبقيت النواة وحدها في آخر الغرفة. هذه المرة سترى صاحب العرش قبل أن يبدأ التحدي.'
+      title:textFor('throneApproach'),
+      sub:textFor('throneApproachSub')
     }
   );
 }
@@ -3744,14 +4284,15 @@ function startBossFight(){
   bossSceneState.cameraOverride=false;
   bossSceneState.introActive=false;
   const phases = ROOM_PUZZLES.map((_, idx)=>genPuzzle(idx));
+  const bossProfile=getBossProfile();
   battle.active=true;
   battle.mode='boss';
-  battle.daemonId=BOSS_PROFILE.name;
+  battle.daemonId=bossProfile.name;
   battle.daemonType='boss';
   battle.keyCarrier=false;
   battle.boss={
-    name:BOSS_PROFILE.name,
-    title:BOSS_PROFILE.title,
+    name:bossProfile.name,
+    title:bossProfile.title,
     phaseIndex:0,
     maxHp:phases.length,
     hp:phases.length,
@@ -3761,7 +4302,7 @@ function startBossFight(){
   battle.puzzle=phases[0];
   battle.hintStep=0;
   battle.timeLeft=getPuzzleTimeLimit(battle.puzzle);
-  showBattleOverlay('عرش الشيفرات', '#ffc040', BOSS_PROFILE.intro);
+  showBattleOverlay(textFor('throneBattle'), '#ffc040', bossProfile.intro);
   renderBattlePanel();
   updateBattleTimerDisplay();
   startBattleTimer();
@@ -3779,11 +4320,11 @@ function openBattle(daemon){
   battle.hintStep=0;
   battle.timeLeft=getPuzzleTimeLimit(battle.puzzle);
   showBattleOverlay(
-    'واجهة التحدي',
+    textFor('challengeInterface'),
     '',
     daemon.hasKey
-    ? `تم رصد ${daemon.callsign || getKeyholderCallsign(G.layer)}. حل التحدي لتأمين مفتاح الخروج.`
-    : 'تم الاشتباك مع الديمون. حل التحدي قبل أن يغلق المسار.'
+    ? fillText('keyDetected',{name:daemon.callsign || getKeyholderCallsign(G.layer)})
+    : textFor('daemonDetected')
   );
   renderBattlePanel();
   updateBattleTimerDisplay();
@@ -3801,36 +4342,37 @@ function renderBattlePanel(){
     const artifactBlock = buildArtifactBlock(p);
     document.getElementById('battle-panel').innerHTML=`
       <div class="battle-panel-block battle-meta">
-        <div class="battle-subtle">وضع تدريبي: هذه المحطة لا تسبب ضررًا، ويمكنك إعادة المحاولة قدر ما تريد.</div>
+        <div class="battle-subtle">${textFor('practiceNotice')}</div>
         <div class="battle-intel-grid">
           <div class="battle-intel-block">
-            <div class="hlabel">الطريقة</div>
+            <div class="hlabel">${textFor('method')}</div>
             <div class="battle-intel-value">${methodLabel}</div>
           </div>
           <div class="battle-intel-block">
-            <div class="hlabel">المفتاح</div>
+            <div class="hlabel">${textFor('key')}</div>
             <div class="battle-intel-value">${keyLabel}</div>
           </div>
         </div>
       </div>
-        <div class="cp-title">تدريب ${battle.practice.label}</div>
+        <div class="cp-title">${fillText('trainingPrefix',{label:battle.practice.label})}</div>
       <div class="cp-brief">${p.brief}</div>
       ${artifactBlock}
       ${referenceBlock}
-      <div id="battle-hint" class="cp-feedback hint">كل ضغطة على التلميح تكشف حرفًا جديدًا من الحل هنا مجانًا.</div>
-      <input id="battle-input" class="cp-input" placeholder="اكتب الإجابة هنا" autocomplete="off" autocorrect="off" autocapitalize="characters" spellcheck="false" />
+      <div id="battle-hint" class="cp-feedback hint">${textFor('freeHint')}</div>
+      <input id="battle-input" class="cp-input" placeholder="${textFor('answerPlaceholder')}" autocomplete="off" autocorrect="off" autocapitalize="characters" spellcheck="false" />
       <div class="cp-action">
-        <button class="cp-btn" onclick="requestHint()">تلميح</button>
-        <button class="cp-btn" onclick="submitBattle()">تأكيد</button>
-        <button class="cp-btn" onclick="closeBattle(false,{reason:'practice-close', practice:true})">إغلاق</button>
+        <button class="cp-btn" onclick="requestHint()">${textFor('hintBtn')}</button>
+        <button class="cp-btn" onclick="submitBattle()">${textFor('submitBtn')}</button>
+        <button class="cp-btn" onclick="closeBattle(false,{reason:'practice-close', practice:true})">${textFor('closeBtn')}</button>
       </div>`;
     const practiceInput=document.getElementById('battle-input');
     practiceInput.focus();
     practiceInput.onkeydown=(e)=>{ if(e.key==='Enter') submitBattle(); };
     return;
   }
-  const pieceLabel = bossMode ? BOSS_PROFILE.name : battle.daemonType==='bishop' ? 'BISHOP' : 'ROOK';
-  const roleLabel = bossMode ? 'نواة العرش' : battle.keyCarrier ? 'حامل المفتاح' : 'ديمون معترض';
+  const bossProfile=getBossProfile();
+  const pieceLabel = bossMode ? bossProfile.name : battle.daemonType==='bishop' ? 'BISHOP' : 'ROOK';
+  const roleLabel = bossMode ? textFor('coreRole') : battle.keyCarrier ? textFor('keyRole') : textFor('daemonRole');
   const hpPct = Math.max(0, (G.hero.hp / G.hero.maxHp) * 100);
   const hpClass = hpPct<35 ? ' low' : hpPct<65 ? ' mid' : '';
   const referenceBlock = buildReferenceBlock(p);
@@ -3839,16 +4381,16 @@ function renderBattlePanel(){
   const keyLabel = p.keyLabel || 'N/A';
   const bossStrip = bossMode ? `
     <div class="boss-strip">
-      <div class="boss-kicker">FINAL SEQUENCE</div>
+      <div class="boss-kicker">${textFor('finalSequence')}</div>
       <div class="boss-title">${battle.boss.title} // ${battle.boss.name}</div>
-      <div class="boss-sub">كل شيفرة صحيحة تكسر طبقة من النواة. الشيفرة السادسة وحدها تنهي العرش.</div>
+      <div class="boss-sub">${textFor('bossLayerText')}</div>
       <div class="boss-meta-grid">
         <div class="boss-meta">
-          <div class="boss-meta-label">المرحلة</div>
+          <div class="boss-meta-label">${textFor('phase')}</div>
           <div class="boss-meta-value">${battle.boss.phaseIndex + 1} / ${battle.boss.maxHp}</div>
         </div>
         <div class="boss-meta">
-          <div class="boss-meta-label">سلامة النواة</div>
+          <div class="boss-meta-label">${textFor('coreHealth')}</div>
           <div class="boss-meta-value">${battle.boss.hp} / ${battle.boss.maxHp}</div>
         </div>
       </div>
@@ -3856,43 +4398,43 @@ function renderBattlePanel(){
     </div>` : '';
   const actionButtons = bossMode
     ? `<div class="cp-action">
-      <button class="cp-btn" onclick="requestHint()">تلميح</button>
-      <button class="cp-btn" onclick="submitBattle()">إرسال</button>
+      <button class="cp-btn" onclick="requestHint()">${textFor('hintBtn')}</button>
+      <button class="cp-btn" onclick="submitBattle()">${textFor('submitBtn')}</button>
     </div>`
     : `<div class="cp-action">
-      <button class="cp-btn" onclick="requestHint()">تلميح</button>
-      <button class="cp-btn" onclick="submitBattle()">إرسال</button>
-      <button class="cp-btn" onclick="closeBattle(false,{reason:'retreat'})">انسحاب</button>
+      <button class="cp-btn" onclick="requestHint()">${textFor('hintBtn')}</button>
+      <button class="cp-btn" onclick="submitBattle()">${textFor('submitBtn')}</button>
+      <button class="cp-btn" onclick="closeBattle(false,{reason:'retreat'})">${textFor('retreatBtn')}</button>
     </div>`;
 
   document.getElementById('battle-panel').innerHTML=`
     <div class="battle-status">
       <div class="battle-panel-block">
-        <div class="hlabel">الصحة</div>
+        <div class="hlabel">${textFor('health')}</div>
         <div class="battle-hp-row">
           <div class="battle-hpbar"><div id="battle-hp-fill" class="hp-fill${hpClass}" style="width:${hpPct}%"></div></div>
           <div id="battle-hp-value" class="battle-hp-value">${G.hero.hp}/${G.hero.maxHp}</div>
         </div>
         <div class="battle-detail-stack">
           <div class="battle-detail-row">
-            <span class="battle-detail-label">الهدف</span>
+            <span class="battle-detail-label">${textFor('target')}</span>
             <span class="battle-detail-value ${battle.keyCarrier ? 'ok' : 'warn'}">${roleLabel}</span>
           </div>
           <div class="battle-detail-row">
-            <span class="battle-detail-label">القطعة</span>
+            <span class="battle-detail-label">${textFor('piece')}</span>
             <span class="battle-detail-value">${pieceLabel}</span>
           </div>
         </div>
       </div>
       <div class="battle-panel-block battle-meta">
-        <div class="timer-pill"><span>المؤقت</span><strong data-battle-timer>${formatTimer(battle.timeLeft)}</strong></div>
+        <div class="timer-pill"><span>${textFor('timer')}</span><strong data-battle-timer>${formatTimer(battle.timeLeft)}</strong></div>
         <div class="battle-intel-grid">
           <div class="battle-intel-block">
-            <div class="hlabel">الطريقة</div>
+            <div class="hlabel">${textFor('method')}</div>
             <div class="battle-intel-value">${methodLabel}</div>
           </div>
           <div class="battle-intel-block">
-            <div class="hlabel">المفتاح</div>
+            <div class="hlabel">${textFor('key')}</div>
             <div class="battle-intel-value">${keyLabel}</div>
           </div>
         </div>
@@ -3902,8 +4444,8 @@ function renderBattlePanel(){
     <div class="cp-title">${p.roomTitle}</div>
     ${artifactBlock}
     ${referenceBlock}
-    <div id="battle-hint" class="cp-feedback hint">كل ضغطة على التلميح تكشف حرفًا جديدًا من الحل وتكلفك ${HINT_DAMAGE} HP.</div>
-    <input id="battle-input" class="cp-input" placeholder="اكتب الإجابة هنا" autocomplete="off" autocorrect="off" autocapitalize="characters" spellcheck="false" />
+    <div id="battle-hint" class="cp-feedback hint">${fillText('paidHint',{damage:HINT_DAMAGE})}</div>
+    <input id="battle-input" class="cp-input" placeholder="${textFor('answerPlaceholder')}" autocomplete="off" autocorrect="off" autocapitalize="characters" spellcheck="false" />
     ${actionButtons}`;
   const input=document.getElementById('battle-input');
   input.focus();
@@ -3919,11 +4461,11 @@ function requestHint(){
   battle.hintStep++;
   el.textContent=msg;
   if(battle.mode==='practice'){
-    log('// تلميح تدريبي مجاني','sys');
+    log(isEnglish() ? '// Free training hint' : '// تلميح تدريبي مجاني','sys');
     return;
   }
   heroTakeDamage(HINT_DAMAGE);
-  log('// تم استخدام التلميح','sys');
+  log(isEnglish() ? '// Hint used' : '// تم استخدام التلميح','sys');
 }
 
 function handleBossSolve(){
@@ -3935,10 +4477,11 @@ function handleBossSolve(){
   document.getElementById('battle-screen').style.pointerEvents='none';
 
   if(boss.phaseIndex >= boss.maxHp - 1){
+    const bossProfile=getBossProfile();
     battle.active=false;
     triggerStatusBeat(
-      `سقوط ${BOSS_PROFILE.name}`,
-      `${BOSS_PROFILE.defeat} الشيفرة الأخيرة كانت ${solvedMethod}.`,
+      fillText('bossFall',{name:bossProfile.name}),
+      fillText('bossFinal',{defeat:bossProfile.defeat, method:solvedMethod}),
       'clear',
       760,
       ()=>{
@@ -3954,8 +4497,8 @@ function handleBossSolve(){
   battle.hintStep = 0;
   battle.timeLeft = getPuzzleTimeLimit(battle.puzzle);
   triggerStatusBeat(
-    'ضربة على النواة',
-    `أصبت ${boss.name} بشيفرة ${solvedMethod}. بقي ${boss.hp} من ${boss.maxHp}.`,
+    textFor('bossHit'),
+    fillText('bossHitSub',{name:boss.name, method:solvedMethod, hp:boss.hp, max:boss.maxHp}),
     'gold',
     430,
     ()=>{
@@ -3982,8 +4525,8 @@ function submitBattle(){
       battle.active=false;
       document.getElementById('battle-screen').style.pointerEvents='none';
       triggerStatusBeat(
-        `اكتمل تدريب ${battle.practice?.label || 'التدريب'}`,
-        'يمكنك إعادة التدريب متى شئت أو الانتقال إلى تدريب آخر داخل المعرض.',
+        fillText('practiceSolvedTitle',{label:battle.practice?.label || (isEnglish() ? 'training' : 'التدريب')}),
+        textFor('practiceSolvedSub'),
         'ok',
         SUCCESS_BEAT_MS,
         ()=>closeBattle(true,{reason:'practice-solved', practice:true, stationId:battle.practice?.stationId})
@@ -3991,7 +4534,8 @@ function submitBattle(){
       return;
     }
     if(battle.mode==='boss'){
-      log(`// تمت إصابة ${BOSS_PROFILE.name} بطبقة ${battle.puzzle.methodLabel}`,'ok');
+      const bossProfile=getBossProfile();
+      log(isEnglish() ? `// ${bossProfile.name} was hit by ${battle.puzzle.methodLabel}` : `// تمت إصابة ${bossProfile.name} بطبقة ${battle.puzzle.methodLabel}`,'ok');
       handleBossSolve();
       return;
     }
@@ -4006,21 +4550,23 @@ function submitBattle(){
       daemonGroups.splice(idx,1);
       updateHud();
       updateMinimap();
-      log(hadKey ? `// تم إسقاط حامل المفتاح ${target.callsign || ''}`.trim() : '// تم إسقاط الديمون المعترض','ok');
+      log(hadKey
+        ? (isEnglish() ? `// Keyholder ${target.callsign || ''} dropped`.trim() : `// تم إسقاط حامل المفتاح ${target.callsign || ''}`.trim())
+        : (isEnglish() ? '// Intercepting daemon dropped' : '// تم إسقاط الديمون المعترض'),'ok');
     }
     if(hadKey){
       G.keyCollected=true;
       activateExtractionState();
       updateHud();
-      log(`// تم تأمين مفتاح الخروج من ${getKeyholderCallsign(G.layer)}: توجّه إلى عقدة الخروج`,'ok');
+      log(isEnglish() ? `// Exit key secured from ${getKeyholderCallsign(G.layer)}: head to the exit node` : `// تم تأمين مفتاح الخروج من ${getKeyholderCallsign(G.layer)}: توجّه إلى عقدة الخروج`,'ok');
     }
     clearInterval(battle.timer);
     battle.timer=null;
     battle.active=false;
     document.getElementById('battle-screen').style.pointerEvents='none';
     triggerStatusBeat(
-      hadKey ? 'تم إسقاط حامل المفتاح' : 'تم فتح المسار',
-      hadKey ? `${keyholderName || 'حامل المفتاح'} سقط. دخل القطاع في حالة extraction؛ اتجه الآن إلى عقدة الخروج.` : 'تم إخماد الديمون وعادت الحركة إلى الشبكة.',
+      hadKey ? textFor('keyDroppedTitle') : textFor('pathOpenedTitle'),
+      hadKey ? fillText('keyDroppedSub',{name:keyholderName || getKeyholderCallsign(G.layer)}) : textFor('pathOpenedSub'),
       hadKey ? 'gold' : 'ok',
       SUCCESS_BEAT_MS,
       ()=>closeBattle(true,{reason:'solved', hadKey})
@@ -4028,12 +4574,12 @@ function submitBattle(){
   } else {
     if(battle.mode==='practice'){
       const hint=document.getElementById('battle-hint');
-      if(hint) hint.textContent='ليست الإجابة الصحيحة بعد. جرّب مرة أخرى أو خذ تلميحًا مجانيًا.';
-      log('// محاولة تدريبية غير صحيحة. لا ضرر في وضع التدريب.','sys');
+      if(hint) hint.textContent=textFor('wrongPractice');
+      log(isEnglish() ? '// Training attempt missed. No damage in training mode.' : '// محاولة تدريبية غير صحيحة. لا ضرر في وضع التدريب.','sys');
       return;
     }
     heroTakeDamage(WRONG_ANSWER_DAMAGE);
-    log(`// إجابة خاطئة: -${WRONG_ANSWER_DAMAGE} HP`,'dmg');
+    log(isEnglish() ? `// Wrong answer: -${WRONG_ANSWER_DAMAGE} HP` : `// إجابة خاطئة: -${WRONG_ANSWER_DAMAGE} HP`,'dmg');
   }
 }
 
@@ -4044,28 +4590,28 @@ function showPuzzleExplanation(payload){
   explainState.pendingGameOver = G.hero.hp<=0;
   G.inputLocked=true;
 
-  const outcome = payload.success ? 'تم تجاوز التحدي بنجاح.' : payload.reason==='timeout' ? 'استنزفك المؤقت قبل إرسال الحل الصحيح.' : 'أُغلقت المواجهة قبل حل التحدي بنجاح.';
+  const outcome = payload.success ? textFor('explainSuccess') : payload.reason==='timeout' ? textFor('explainTimeout') : textFor('explainClosed');
   const detail = payload.result || (payload.success
-    ? (payload.hadKey ? 'حللت اللغز، وأسقطت حامل المفتاح، واستحوذت على مفتاح الخروج.' : 'حللت اللغز وأزلت الديمون المعترض من الغرفة.')
-    : 'يظهر الحل الصحيح أدناه حتى يبقى المفهوم الأمني واضحًا بعد المواجهة.');
+    ? (payload.hadKey ? textFor('explainSolvedKey') : textFor('explainSolvedDaemon'))
+    : textFor('explainCorrectShown'));
 
   document.getElementById('explain-title').textContent = puzzle.roomTitle;
   document.getElementById('explain-summary').textContent = `${outcome} ${detail}`;
   document.getElementById('explain-grid').innerHTML = `
     <div class="explain-block">
-      <div class="hlabel">الحل الصحيح</div>
+      <div class="hlabel">${textFor('correctAnswer')}</div>
       <div class="explain-answer">${puzzle.answerLabel || puzzle.answer}</div>
     </div>
     <div class="explain-block">
-      <div class="hlabel">المفهوم الأمني</div>
+      <div class="hlabel">${textFor('securityConcept')}</div>
       <div class="explain-text"><strong>${puzzle.domain}</strong><br>${puzzle.concept}</div>
     </div>
     <div class="explain-block">
-      <div class="hlabel">لماذا يهم</div>
+      <div class="hlabel">${textFor('whyMatters')}</div>
       <div class="explain-text">${puzzle.lesson}</div>
     </div>
     <div class="explain-block">
-      <div class="hlabel">نص التحدي</div>
+      <div class="hlabel">${textFor('challengeText')}</div>
       <div class="explain-text">${puzzle.prompt}</div>
     </div>`;
   document.getElementById('s-explain').style.display='flex';
@@ -4117,11 +4663,14 @@ function closeBattle(success, options={}){
     }
     if(options.reason==='timeout'){
       if(G.hero.hp<=0){
+        const bossProfile=getBossProfile();
         showPuzzleExplanation({
           success:false,
           reason:'timeout',
           hadKey:false,
-          result:`انتهت دورة المؤقت أثناء مواجهة ${BOSS_PROFILE.name} وسقطت قبل إنهاء التسلسل الكامل.`,
+          result:isEnglish()
+            ? `The timer cycle ended during the fight with ${bossProfile.name}, and you fell before finishing the full sequence.`
+            : `انتهت دورة المؤقت أثناء مواجهة ${bossProfile.name} وسقطت قبل إنهاء التسلسل الكامل.`,
           puzzle:resolvedPuzzle
         });
         return;
@@ -4134,10 +4683,10 @@ function closeBattle(success, options={}){
   let resultMessage='';
   if(success){
     resultMessage = options.hadKey
-      ? 'حللت التحدي الأمني واستحوذت على مفتاح الخروج.'
-      : 'حللت التحدي الأمني وفتحت الطريق.';
+      ? textFor('solvedKeyResult')
+      : textFor('solvedPathResult');
   } else if(options.reason==='timeout'){
-    resultMessage = `انتهت دورة المؤقت وأصابك الديمون بـ ${BATTLE_TICK_DAMAGE} HP حتى سقطت.`;
+    resultMessage = fillText('timeoutResult',{damage:BATTLE_TICK_DAMAGE});
   } else {
     if(targetDaemon){
       targetDaemon.freezeTurns = RETREAT_FREEZE_TURNS;
@@ -4145,8 +4694,8 @@ function closeBattle(success, options={}){
       targetDaemon.commitTurns = 0;
     }
     heroTakeDamage(RETREAT_DAMAGE,{deferGameOver:true});
-    resultMessage = `انسحبت من المواجهة، خسرت ${RETREAT_DAMAGE} HP، وتعطّل الديمون لمدة ${RETREAT_FREEZE_TURNS} أدوار قبل أن يتحرك مجددًا.`;
-    log(`// انسحاب تكتيكي: -${RETREAT_DAMAGE} HP، الديمون متعطل ${RETREAT_FREEZE_TURNS} أدوار`,'dmg');
+    resultMessage = fillText('retreatResult',{damage:RETREAT_DAMAGE, turns:RETREAT_FREEZE_TURNS});
+    log(isEnglish() ? `// Tactical retreat: -${RETREAT_DAMAGE} HP, daemon disabled for ${RETREAT_FREEZE_TURNS} turns` : `// انسحاب تكتيكي: -${RETREAT_DAMAGE} HP، الديمون متعطل ${RETREAT_FREEZE_TURNS} أدوار`,'dmg');
   }
 
   if(!success && G.hero.hp<=0){
@@ -4312,7 +4861,7 @@ function collectMedkitAtHero(){
   G.medkits.splice(idx,1);
   const gained=heroHeal(medkit.heal);
   updateMinimap();
-  log(`// تم التقاط حزمة علاج: +${gained} HP`,'ok');
+  log(isEnglish() ? `// Medkit collected: +${gained} HP` : `// تم التقاط حزمة علاج: +${gained} HP`,'ok');
 }
 
 function onHeroArrive(){
@@ -4323,14 +4872,14 @@ function onHeroArrive(){
     if(station){
       const samePrompt = G.tutorialPrompt?.type==='station' && G.tutorialPrompt.stationId===station.id;
       G.tutorialPrompt={type:'station', stationId:station.id};
-      if(!samePrompt) log(`// ${station.label}: اضغط E أو Enter لبدء التدريب`,'sys');
+      if(!samePrompt) log(isEnglish() ? `// ${station.label}: press E or Enter to start training` : `// ${station.label}: اضغط E أو Enter لبدء التدريب`,'sys');
       updateTutorialChat();
       return;
     }
     if(node&&node.state===GOAL){
       const samePrompt = G.tutorialPrompt?.type==='exit';
       G.tutorialPrompt={type:'exit'};
-      if(!samePrompt) log('// بوابة الخروج التدريبية جاهزة: اضغط E أو Enter لإنهاء المعرض','ok');
+      if(!samePrompt) log(isEnglish() ? '// Training exit is ready: press E or Enter to finish the gallery' : '// بوابة الخروج التدريبية جاهزة: اضغط E أو Enter لإنهاء المعرض','ok');
       updateTutorialChat();
       return;
     }
@@ -4340,7 +4889,7 @@ function onHeroArrive(){
   }
   if(node&&node.state===GOAL){
     if(G.keyCollected){ roomClear(); }
-    else{ log('// لا يمكنك الخروج قبل الاستحواذ على المفتاح','sys'); }
+    else{ log(isEnglish() ? '// You cannot exit before securing the key' : '// لا يمكنك الخروج قبل الاستحواذ على المفتاح','sys'); }
   }
 }
 
@@ -4415,7 +4964,7 @@ function daemonTurn(){
     if(dm.x===G.hero.x&&dm.z===G.hero.z) catcher=dm;
   });
   if(catcher){
-    log('// تم اعتراض اللاعب - نقل إلى بعد القتال','sys');
+    log(isEnglish() ? '// Player intercepted - shifting to battle layer' : '// تم اعتراض اللاعب - نقل إلى بعد القتال','sys');
     triggerEncounter(catcher);
   }
 }
@@ -4432,21 +4981,21 @@ function roomClear(){
   G.roomClearing=true;
   G.inputLocked=true;
   const completedRoom=G.layer;
-  log(`// تم إنهاء الغرفة ${completedRoom}`,'ok');
+  log(isEnglish() ? `// Room ${completedRoom} cleared` : `// تم إنهاء الغرفة ${completedRoom}`,'ok');
   if(isTutorialMode()){
     openTutorialExitMenu();
     return;
   }
   triggerStatusBeat(
-    'غرفة مؤمّنة',
-    completedRoom>=ROOM_COUNT ? 'انكسرت الطبقات الست. النواة المركزية بدأت بالظهور.' : `الغرفة ${completedRoom} أصبحت آمنة. ${getRoomDebrief(completedRoom)}`,
+    textFor('roomSecured'),
+    completedRoom>=ROOM_COUNT ? textFor('layersBroken') : fillText('roomSafe',{room:completedRoom, note:getRoomDebrief(completedRoom)}),
     'clear',
     ROOM_CLEAR_BEAT_MS,
     ()=>{
       if(completedRoom>=ROOM_COUNT){
         triggerStatusBeat(
-          'استيقاظ العرش',
-          BOSS_PROFILE.intro,
+          textFor('throneWake'),
+          getBossProfile().intro,
           'gold',
           620,
           ()=>startBossEncounter()
@@ -4474,7 +5023,7 @@ function setupRoom(options={}){
   updateNodeHighlight(); updateMinimap(); updateHud();
   updateTutorialChat();
   showPuzzlePanel();
-  log(`// ${RUNNER_NAME}: ${currentTheme.arabic} // ${getRoomStoryBeat(G.layer)}`,'sys');
+  log(isEnglish() ? `// ${getRunnerName()}: ${currentTheme.label} // ${getRoomStoryBeat(G.layer)}` : `// ${getRunnerName()}: ${currentTheme.arabic} // ${getRoomStoryBeat(G.layer)}`,'sys');
 }
 
 function updateHud(){
@@ -4483,7 +5032,7 @@ function updateHud(){
   const keyPill=$('key-hud-pill');
   const keyVisible=!isTutorialMode() && !bossSceneState.active && !G.keyCollected;
   if(keyPill) keyPill.hidden=!keyVisible;
-  setText('h-key', keyVisible ? 'ابحث عن حامل المفتاح' : '');
+  setText('h-key', keyVisible ? textFor('keySeek') : '');
 }
 
 function updateMinimap(){
@@ -4558,11 +5107,12 @@ function gameOver(){
   setDisplay('hud','none');
   hideTutorialChat();
   setHtml('over-box', isTutorialMode()
-    ? `تعطلت <span>${RUNNER_NAME}</span> داخل محاكاة التهيئة قبل بلوغ عقدة الخروج.<br>مجموع الأدوار: <span>${G.turns}</span>`
-    : `سقط <span>${RUNNER_NAME}</span> قبل بلوغ بوابة الخروج.<br>وصلت إلى الغرفة <span>${G.layer}</span> من ${getActiveRoomCount()}<br>مجموع الأدوار: <span>${G.turns}</span>`);
+    ? fillText('overTutorial',{runner:getRunnerName(), turns:G.turns})
+    : fillText('overRun',{runner:getRunnerName(), room:G.layer, count:getActiveRoomCount(), turns:G.turns}));
   const overBtn=$('over-btn');
-  overBtn.textContent = isTutorialMode() ? '↺ إعادة التدريب' : '↺ إعادة المحاولة';
+  overBtn.textContent = isTutorialMode() ? textFor('retryTraining') : textFor('retryRun');
   overBtn.onclick = isTutorialMode() ? startTutorial : startGame;
+  setText('over-title', textFor('overTitle'));
   setDisplay('s-over','flex');
 }
 
@@ -4573,12 +5123,12 @@ function winGame(){
   hideDisplays(RESULT_SCREENS);
   setDisplay('hud','none');
   hideTutorialChat();
-  setText('win-title', isTutorialMode() ? '[ محاكاة مكتملة ]' : '[ هروب ناجح ]');
+  setText('win-title', isTutorialMode() ? textFor('winTutorialTitle') : textFor('winRunTitle'));
   setHtml('win-box', isTutorialMode()
-    ? `أكمل <span>${RUNNER_NAME}</span> مسار التهيئة واستوعب الحلقة الأساسية: حركة، اعتراض، حل، ثم خروج.<br>مجموع الأدوار: <span>${G.turns}</span>`
-    : `استعاد <span>${RUNNER_NAME}</span> مفتاح الخروج وأسقط <span>${BOSS_PROFILE.name}</span> بعد كسر القطاعات الستة.<br>مجموع الأدوار: <span>${G.turns}</span>`);
+    ? fillText('winTutorial',{runner:getRunnerName(), turns:G.turns})
+    : fillText('winRun',{runner:getRunnerName(), boss:getBossProfile().name, turns:G.turns}));
   const winBtn=$('win-btn');
-  winBtn.textContent = 'العودة إلى القائمة الرئيسية';
+  winBtn.textContent = textFor('mainMenu');
   winBtn.onclick = returnToMainMenu;
   setDisplay('s-win','flex');
 }
@@ -4622,8 +5172,8 @@ function startGame(){
 function startTutorial(){
   startSession(MODE_TUTORIAL);
   triggerStatusBeat(
-    'محاكاة تمهيدية',
-    'هذا معرض آمن: كل رمز يحمل شكلًا صغيرًا يلمّح إلى شيفرته، والاقتراب من أي رمز أو من ROOK وBISHOP يفتح شرحًا سريعًا فوقه.',
+    textFor('tutorialStartTitle'),
+    textFor('tutorialStartSub'),
     'clear',
     620
   );
@@ -4866,5 +5416,5 @@ setInterval(animateMatrixRain,55);
 
 setDisplay('s-title','flex');
 hideDisplays(['hud','s-over','s-win','s-explain','s-room-brief','s-pause','s-tutorial-exit','engage-screen','status-beat','room-travel']);
-defaultTitleStoryHtml = document.querySelector('.title-story').innerHTML;
+applyLanguage();
 refreshMatrixRain();

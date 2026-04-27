@@ -18,30 +18,34 @@
 <div id="s-title">
   <canvas id="rain"></canvas>
   <div class="title-main">CIPHER.BREACH</div>
-  <div class="title-story">
+  <div class="title-story" id="title-story">
     أنت المُرسَل، عالق داخل شبكة أمنية خربانة، وكل غرفة فيها شيفرة لازم تفكها.<br>
     خذ المفتاح واهرب من كل قطاع قبل ما يمسكك الحراس.<br>
     وإذا وصلت للنهاية، بتقابل راس البلا.
   </div>
   <div class="menu">
-    <button class="mbtn" onclick="startGame()">[ ابدأ ] دخول الشبكة</button>
-    <button class="mbtn" onclick="startTutorial()">[ تدريب ] محاكاة تمهيدية</button>
-    <div class="menu-note">المحاكاة التمهيدية أصبحت معرضًا آمنًا: تعرّف على الديمونات، جرّب الشيفرات الست، ثم ابدأ المهمة الأساسية وأنت فاهم النظام.</div>
+    <div class="language-switch" aria-label="Language">
+      <button class="lang-btn active" type="button" data-lang="ar" onclick="setLanguage('ar')">العربية</button>
+      <button class="lang-btn" type="button" data-lang="en" onclick="setLanguage('en')">English</button>
+    </div>
+    <button class="mbtn" id="start-btn" onclick="startGame()">[ ابدأ ] دخول الشبكة</button>
+    <button class="mbtn" id="tutorial-btn" onclick="startTutorial()">[ تدريب ] محاكاة تمهيدية</button>
+    <div class="menu-note" id="menu-note">تعرّف على الديمونات، جرّب الشيفرات الست، ثم ابدأ المهمة الأساسية وأنت فاهم النظام.</div>
   </div>
 </div>
 
 <div id="hud">
   <div class="hud-top">
-    <div class="hud-pill"><div><div class="hlabel">الغرفة</div><div class="hval" id="h-room">01/06</div></div></div>
+    <div class="hud-pill"><div><div class="hlabel" id="h-room-label">الغرفة</div><div class="hval" id="h-room">01/06</div></div></div>
     <div class="hud-pill hud-pill--stack">
-      <div class="hlabel">الصحة</div>
+      <div class="hlabel" id="h-health-label">الصحة</div>
       <div class="hp-wrap"><div class="hp-fill hp-fill--full" id="hp-fill"></div></div>
       <div class="hval hval--compact" id="h-hp">100</div>
       <div class="hp-float" id="hp-float" aria-live="polite"></div>
     </div>
-    <div class="hud-pill hud-pill--key" id="key-hud-pill"><div><div class="hlabel">مفتاح الخروج</div><div class="hval gold" id="h-key">ابحث عن حامل المفتاح</div></div></div>
-    <div class="hud-pill hud-pill--push"><div><div class="hlabel">الأدوار</div><div class="hval green" id="h-turns">0</div></div></div>
-    <button class="hud-control-btn" onclick="togglePauseMenu()">Tab | إيقاف</button>
+    <div class="hud-pill hud-pill--key" id="key-hud-pill"><div><div class="hlabel" id="h-key-label">مفتاح الخروج</div><div class="hval gold" id="h-key">ابحث عن حامل المفتاح</div></div></div>
+    <div class="hud-pill hud-pill--push"><div><div class="hlabel" id="h-turns-label">الأدوار</div><div class="hval green" id="h-turns">0</div></div></div>
+    <button class="hud-control-btn" id="desktop-pause-btn" onclick="togglePauseMenu()">Tab | إيقاف</button>
     <div id="mobile-controls" aria-label="Mobile controls">
       <div class="mobile-actions" aria-label="Action controls">
         <button class="mobile-btn mobile-action" type="button" id="mobile-action">تفاعل</button>
@@ -66,7 +70,7 @@
 
 <div id="battle-screen">
   <div class="battle-card">
-    <div class="battle-title">واجهة التحدي</div>
+    <div class="battle-title" id="battle-title">واجهة التحدي</div>
     <div class="battle-sub" id="battle-sub">تم اعتراضك بواسطة ديمون</div>
     <div id="battle-panel"></div>
   </div>
@@ -114,41 +118,41 @@
 
 <div id="s-explain">
   <div class="explain-card">
-    <div class="explain-eyebrow">مراجعة اللغز</div>
+    <div class="explain-eyebrow" id="explain-eyebrow">مراجعة اللغز</div>
     <div class="explain-title" id="explain-title">الدرس الأمني</div>
     <div class="explain-summary" id="explain-summary"></div>
     <div class="explain-grid" id="explain-grid"></div>
-    <button class="mbtn btn--right" onclick="dismissExplanation()">متابعة</button>
+    <button class="mbtn btn--right" id="explain-continue-btn" onclick="dismissExplanation()">متابعة</button>
   </div>
 </div>
 
 <div id="s-pause" class="modal-overlay">
   <div class="modal-card">
-    <div class="modal-kicker">إيقاف</div>
-    <div class="modal-title">تم إيقاف التشغيل</div>
-    <div class="modal-copy">تم تجميد الحركة مؤقتًا. يمكنك العودة إلى الجولة أو الخروج إلى القائمة الرئيسية.</div>
+    <div class="modal-kicker" id="pause-kicker">إيقاف</div>
+    <div class="modal-title" id="pause-title">تم إيقاف التشغيل</div>
+    <div class="modal-copy" id="pause-copy">تم تجميد الحركة مؤقتًا. يمكنك العودة إلى الجولة أو الخروج إلى القائمة الرئيسية.</div>
     <div class="modal-actions">
-      <button class="mbtn" onclick="quitToMainMenu()">الخروج إلى القائمة</button>
-      <button class="mbtn" onclick="resumePauseMenu()">متابعة</button>
+      <button class="mbtn" id="pause-quit-btn" onclick="quitToMainMenu()">الخروج إلى القائمة</button>
+      <button class="mbtn" id="pause-resume-btn" onclick="resumePauseMenu()">متابعة</button>
     </div>
   </div>
 </div>
 
 <div id="s-tutorial-exit" class="modal-overlay">
   <div class="modal-card">
-    <div class="modal-kicker">إنهاء التدريب</div>
-    <div class="modal-title">انتهى التدريب الآن</div>
-    <div class="modal-copy">المعرض التمهيدي أدى دوره. ابدأ المهمة الأساسية مباشرة لو أنك جاهز، أو عد إلى القائمة الرئيسية.</div>
+    <div class="modal-kicker" id="tutorial-exit-kicker">إنهاء التدريب</div>
+    <div class="modal-title" id="tutorial-exit-title">انتهى التدريب الآن</div>
+    <div class="modal-copy" id="tutorial-exit-copy">المعرض التمهيدي أدى دوره. ابدأ المهمة الأساسية مباشرة لو أنك جاهز، أو عد إلى القائمة الرئيسية.</div>
     <div class="modal-actions">
-      <button class="mbtn" onclick="closeTutorialExitMenu()">استمر في التدريب</button>
-      <button class="mbtn" onclick="quitToMainMenu()">العودة للقائمة</button>
-      <button class="mbtn" onclick="startGameFromTutorialExit()">ابدأ المهمة</button>
+      <button class="mbtn" id="tutorial-exit-continue-btn" onclick="closeTutorialExitMenu()">استمر في التدريب</button>
+      <button class="mbtn" id="tutorial-exit-menu-btn" onclick="quitToMainMenu()">العودة للقائمة</button>
+      <button class="mbtn" id="tutorial-exit-start-btn" onclick="startGameFromTutorialExit()">ابدأ المهمة</button>
     </div>
   </div>
 </div>
 
 <div id="s-over">
-  <div class="end-title dead">[ انتهى الاتصال ]</div>
+  <div class="end-title dead" id="over-title">[ انتهى الاتصال ]</div>
   <div id="over-box" class="result-box">
     سقط <span>المُرسَل</span> قبل بلوغ بوابة الخروج.<br>
     وصلت إلى الغرفة <span id="r-room">?</span> من 6<br>
