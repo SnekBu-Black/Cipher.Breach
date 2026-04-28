@@ -177,6 +177,20 @@ html[dir="ltr"] .hud-pill--push{margin-right:0;margin-left:auto;}
   width:min(900px,92vw);background:rgba(2,10,16,0.96);border:2px solid rgba(0,229,255,0.3);
   padding:1.3rem;border-radius:12px;display:flex;flex-direction:column;gap:0.75rem;
 }
+.battle-card.damage-shake{animation:battleWrongShake 0.34s ease;border-color:rgba(255,34,85,0.82);box-shadow:0 0 34px rgba(255,34,85,0.28),0 18px 44px rgba(0,0,0,0.34);}
+#hud.damage-flash .hud-pill--stack{animation:hpDamagePulse 0.45s ease;}
+@keyframes battleWrongShake{
+  0%,100%{transform:translateX(0);}
+  16%{transform:translateX(-12px);}
+  32%{transform:translateX(10px);}
+  48%{transform:translateX(-8px);}
+  64%{transform:translateX(6px);}
+  80%{transform:translateX(-3px);}
+}
+@keyframes hpDamagePulse{
+  0%,100%{box-shadow:none;border-color:rgba(0,229,255,0.08);}
+  35%{box-shadow:0 0 22px rgba(255,34,85,0.42);border-color:rgba(255,34,85,0.66);background:rgba(255,34,85,0.1);}
+}
 .battle-title{font-size:1.35rem;color:var(--red);text-align:center;}
 .battle-sub{font-size:1rem;color:rgba(0,229,255,0.7);text-align:center;}
 .battle-status{display:grid;grid-template-columns:1.35fr 1fr;gap:0.75rem;}

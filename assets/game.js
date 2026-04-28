@@ -11,6 +11,8 @@ const RETREAT_DAMAGE = 5;
 const RETREAT_FREEZE_TURNS = 4;
 const ROOK_SIGHT_RANGE = 4;
 const BISHOP_SIGHT_RANGE = 4;
+const DAEMON_AWARENESS_RANGE = 4;
+const DAEMON_HEARING_RANGE = 3;
 const ROOK_STEP_LIMIT = 2;
 const AGGRO_MEMORY_TURNS = 3;
 const AGGRO_BREAK_COVER_TURNS = 1;
@@ -509,7 +511,7 @@ let pauseState = {active:false, prevInputLocked:false, resumeBattleTimer:false};
 let roomBriefState = {active:false, room:null, onContinue:null};
 let bossSceneState = {active:false, introActive:false, archon:null, throne:null, stand:0, targetStand:0, cameraOverride:false, cameraPos:null, lookAt:null, clashTimer:null, riseTimer:null};
 let camFollow = {x:0,z:0};
-let UI = {tutorialChatAnchor:null, hpFloatTimer:null, swipe:null};
+let UI = {tutorialChatAnchor:null, hpFloatTimer:null, damageTimer:null, shakeTimer:null, swipe:null};
 let FX = {cameraKick:0, engageTimer:null, beatTimer:null, travelTimer:null, engageActive:false, beatActive:false, travelActive:false, audioCtx:null, logFlashTimer:null};
 let activeLang = (()=>{ try { return localStorage.getItem('cipherLanguage') || 'ar'; } catch { return 'ar'; } })();
 const RUNNER_NAME = 'المُرسَل';
@@ -718,6 +720,7 @@ const UI_TEXT = {
     keyDroppedSub:'{name} سقط. دخل القطاع في حالة extraction؛ اتجه الآن إلى عقدة الخروج.',
     pathOpenedSub:'تم إخماد الديمون وعادت الحركة إلى الشبكة.',
     wrongPractice:'ليست الإجابة الصحيحة بعد. جرّب مرة أخرى أو خذ تلميحًا مجانيًا.',
+    wrongDamage:'إجابة خاطئة. تلقيت ضررًا.',
     solvedKeyResult:'حللت التحدي الأمني واستحوذت على مفتاح الخروج.',
     solvedPathResult:'حللت التحدي الأمني وفتحت الطريق.',
     timeoutResult:'انتهت دورة المؤقت وأصابك الديمون بـ {damage} HP حتى سقطت.',
@@ -849,6 +852,7 @@ const UI_TEXT = {
     keyDroppedSub:'{name} fell. The sector entered extraction; head to the exit node now.',
     pathOpenedSub:'The daemon was suppressed and movement returned to the network.',
     wrongPractice:'Not the right answer yet. Try again or take a free hint.',
+    wrongDamage:'Wrong answer. Damage taken.',
     solvedKeyResult:'You solved the security challenge and secured the exit key.',
     solvedPathResult:'You solved the security challenge and opened the path.',
     timeoutResult:'The timer cycle ended and the daemon hit you for {damage} HP until you fell.',
@@ -3914,8 +3918,50 @@ function hasLineOfSightBishop(dm){
   return hasBishopSightFrom(dm.x,dm.z,G.hero.x,G.hero.z);
 }
 
+function getBoardDistance(ax,az,bx,bz){
+  return Math.max(Math.abs(ax-bx), Math.abs(az-bz));
+}
+
+function getWalkDistance(ax,az,bx,bz){
+  return Math.abs(ax-bx) + Math.abs(az-bz);
+}
+
+function hasGridSight(fromX,fromZ,targetX,targetZ,range=DAEMON_AWARENESS_RANGE){
+  const dx=targetX-fromX, dz=targetZ-fromZ;
+  const steps=getBoardDistance(fromX,fromZ,targetX,targetZ);
+  if(steps===0 || steps>range) return false;
+  const seen=new Set();
+  let prevX=fromX, prevZ=fromZ;
+  for(let i=1;i<=steps;i++){
+    const tx=Math.round(fromX + (dx*i/steps));
+    const tz=Math.round(fromZ + (dz*i/steps));
+    if(tx!==prevX && tz!==prevZ){
+      if(getNodeState(tx,prevZ)===WALL || getNodeState(prevX,tz)===WALL) return false;
+    }
+    if(i===steps) break;
+    const key=keyOf(tx,tz);
+    if(!seen.has(key)){
+      seen.add(key);
+      if(getNodeState(tx,tz)===WALL) return false;
+    }
+    prevX=tx;
+    prevZ=tz;
+  }
+  return true;
+}
+
 function canDaemonSeeHero(dm){
-  return dm.type==='rook' ? hasLineOfSightRook(dm) : hasLineOfSightBishop(dm);
+  const chessSight = dm.type==='rook' ? hasLineOfSightRook(dm) : hasLineOfSightBishop(dm);
+  if(chessSight) return true;
+  return hasGridSight(dm.x,dm.z,G.hero.x,G.hero.z,DAEMON_AWARENESS_RANGE);
+}
+
+function canDaemonSenseHero(dm){
+  const dist=getWalkDistance(dm.x,dm.z,G.hero.x,G.hero.z);
+  if(dist===0) return true;
+  if(dist>DAEMON_HEARING_RANGE) return false;
+  if(hasGridSight(dm.x,dm.z,G.hero.x,G.hero.z,DAEMON_HEARING_RANGE)) return true;
+  return dist<=2 && !hasNearbyCover(G.hero.x,G.hero.z);
 }
 
 function hasAlignedCoverBetween(fromX,fromZ,targetX,targetZ){
@@ -4460,6 +4506,7 @@ function requestHint(){
   const msg=getProgressiveHint(battle.puzzle,battle.hintStep);
   battle.hintStep++;
   el.textContent=msg;
+  el.className='cp-feedback hint';
   if(battle.mode==='practice'){
     log(isEnglish() ? '// Free training hint' : '// تلميح تدريبي مجاني','sys');
     return;
@@ -4574,9 +4621,18 @@ function submitBattle(){
   } else {
     if(battle.mode==='practice'){
       const hint=document.getElementById('battle-hint');
-      if(hint) hint.textContent=textFor('wrongPractice');
+      if(hint){
+        hint.textContent=textFor('wrongPractice');
+        hint.className='cp-feedback bad';
+      }
+      shakeBattleCard();
       log(isEnglish() ? '// Training attempt missed. No damage in training mode.' : '// محاولة تدريبية غير صحيحة. لا ضرر في وضع التدريب.','sys');
       return;
+    }
+    const hint=document.getElementById('battle-hint');
+    if(hint){
+      hint.textContent=textFor('wrongDamage');
+      hint.className='cp-feedback bad';
     }
     heroTakeDamage(WRONG_ANSWER_DAMAGE);
     log(isEnglish() ? `// Wrong answer: -${WRONG_ANSWER_DAMAGE} HP` : `// إجابة خاطئة: -${WRONG_ANSWER_DAMAGE} HP`,'dmg');
@@ -4843,6 +4899,27 @@ function showHpFloat(amount){
   },900);
 }
 
+function shakeBattleCard(){
+  const card=document.querySelector('#battle-screen .battle-card');
+  if(!card || !isFlexVisible('battle-screen')) return;
+  clearTimeout(UI.shakeTimer);
+  card.classList.remove('damage-shake');
+  card.offsetWidth;
+  card.classList.add('damage-shake');
+  UI.shakeTimer=setTimeout(()=>card.classList.remove('damage-shake'),420);
+}
+
+function showDamageFeedback(){
+  shakeBattleCard();
+  const hud=$('hud');
+  if(!hud || !isFlexVisible('hud')) return;
+  clearTimeout(UI.damageTimer);
+  hud.classList.remove('damage-flash');
+  hud.offsetWidth;
+  hud.classList.add('damage-flash');
+  UI.damageTimer=setTimeout(()=>hud.classList.remove('damage-flash'),500);
+}
+
 function heroHeal(amount){
   const before=G.hero.hp;
   G.hero.hp=Math.min(G.hero.maxHp,G.hero.hp+amount);
@@ -4902,7 +4979,7 @@ function daemonTurn(){
     const profile=getDaemonProfile(dm);
     occupied.delete(`${dm.x},${dm.z}`);
 
-    const sees = canDaemonSeeHero(dm);
+    const sees = canDaemonSeeHero(dm) || canDaemonSenseHero(dm);
     let hidden=false;
     if(sees){
       dm.lastKnownHero = {x:G.hero.x, z:G.hero.z};
@@ -4972,7 +5049,10 @@ function daemonTurn(){
 function heroTakeDamage(dmg, opts={}){
   G.hero.hp=Math.max(0,G.hero.hp-dmg);
   updateHeroVitals();
-  if(dmg>0) showHpFloat(-dmg);
+  if(dmg>0){
+    showHpFloat(-dmg);
+    showDamageFeedback();
+  }
   if(G.hero.hp<=0 && !opts.deferGameOver) setTimeout(gameOver,400);
 }
 
