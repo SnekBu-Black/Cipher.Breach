@@ -509,7 +509,12 @@ let battle = {active:false, mode:null, daemonId:null, daemonType:null, keyCarrie
 let explainState = {active:false, pendingGameOver:false};
 let pauseState = {active:false, prevInputLocked:false, resumeBattleTimer:false};
 let roomBriefState = {active:false, room:null, onContinue:null};
-let bossSceneState = {active:false, introActive:false, archon:null, throne:null, stand:0, targetStand:0, cameraOverride:false, cameraPos:null, lookAt:null, clashTimer:null, riseTimer:null};
+let bossSceneState = {
+  active:false, introActive:false, archon:null, throne:null,
+  stand:0, targetStand:0, defeatActive:false, defeatStart:0, defeatDuration:0,
+  cameraOverride:false, cameraPos:null, lookAt:null,
+  clashTimer:null, riseTimer:null, defeatTimer:null, defeatFx:[]
+};
 let camFollow = {x:0,z:0};
 let UI = {tutorialChatAnchor:null, hpFloatTimer:null, damageTimer:null, shakeTimer:null, swipe:null};
 let FX = {cameraKick:0, engageTimer:null, beatTimer:null, travelTimer:null, engageActive:false, beatActive:false, travelActive:false, audioCtx:null, logFlashTimer:null};
@@ -1029,6 +1034,10 @@ function resetSceneFx(){
 function clearBossSceneState(){
   clearTimeout(bossSceneState.clashTimer);
   clearTimeout(bossSceneState.riseTimer);
+  clearTimeout(bossSceneState.defeatTimer);
+  (bossSceneState.defeatFx || []).forEach(obj=>{
+    if(obj?.parent) obj.parent.remove(obj);
+  });
   [bossSceneState.archon, bossSceneState.throne].forEach(obj=>{
     if(obj?.parent) obj.parent.remove(obj);
   });
@@ -1038,11 +1047,16 @@ function clearBossSceneState(){
   bossSceneState.throne=null;
   bossSceneState.stand=0;
   bossSceneState.targetStand=0;
+  bossSceneState.defeatActive=false;
+  bossSceneState.defeatStart=0;
+  bossSceneState.defeatDuration=0;
   bossSceneState.cameraOverride=false;
   bossSceneState.cameraPos=null;
   bossSceneState.lookAt=null;
   bossSceneState.clashTimer=null;
   bossSceneState.riseTimer=null;
+  bossSceneState.defeatTimer=null;
+  bossSceneState.defeatFx=[];
 }
 
 function getRoomTheme(room){
@@ -3022,30 +3036,82 @@ function renderLoop(){
     }
   });
   if(bossSceneState.active && bossSceneState.archon){
-    bossSceneState.stand += (bossSceneState.targetStand-bossSceneState.stand)*0.08;
     const archon=bossSceneState.archon;
     const pose=archon.userData.pose;
     const seatPos=archon.userData.seatPos;
     const standPos=archon.userData.standPos;
+    const defeatActive=bossSceneState.defeatActive;
+    const defeatProgress = defeatActive
+      ? Math.max(0, Math.min(1, (Date.now()-bossSceneState.defeatStart) / Math.max(1,bossSceneState.defeatDuration)))
+      : 0;
+    const collapse = defeatActive ? 1-Math.pow(1-defeatProgress,3) : 0;
+    const burst = defeatActive ? Math.sin(Math.min(1,defeatProgress*1.35)*Math.PI) : 0;
+
+    bossSceneState.stand += ((defeatActive ? 1 : bossSceneState.targetStand)-bossSceneState.stand)*(defeatActive ? 0.18 : 0.08);
     if(seatPos && standPos){
       archon.position.lerpVectors(seatPos, standPos, bossSceneState.stand);
+      if(defeatActive){
+        archon.position.y -= collapse*0.54;
+        archon.position.z += collapse*0.42;
+        archon.position.x += Math.sin(t*38)*(1-defeatProgress)*0.055;
+      }
     }
     if(pose){
-      pose.rotation.x = (-0.48 * (1-bossSceneState.stand)) + (Math.sin(t*2.1)*0.015);
-      pose.position.y = Math.sin(t*1.7)*0.04;
+      if(defeatActive){
+        pose.rotation.x = (collapse*1.42) + Math.sin(t*42)*(1-defeatProgress)*0.055;
+        pose.rotation.z = Math.sin(defeatProgress*Math.PI*2.2)*(1-defeatProgress)*0.24;
+        pose.position.y = -(collapse*0.36) + Math.sin(t*36)*(1-defeatProgress)*0.04;
+        pose.scale.set(1 + burst*0.08, Math.max(0.56,1-(collapse*0.42)), 1 + burst*0.05);
+      } else {
+        pose.rotation.x = (-0.48 * (1-bossSceneState.stand)) + (Math.sin(t*2.1)*0.015);
+        pose.rotation.z = 0;
+        pose.position.y = Math.sin(t*1.7)*0.04;
+        pose.scale.set(1,1,1);
+      }
     }
-    archon.rotation.y = Math.PI + (Math.sin(t*0.85)*0.04);
+    archon.rotation.y = Math.PI + (defeatActive ? Math.sin(t*20)*(1-defeatProgress)*0.08 : Math.sin(t*0.85)*0.04);
     if(archon.userData.halo){
-      archon.userData.halo.rotation.z = t*(0.65 + (bossSceneState.stand*0.4));
-      archon.userData.halo.scale.setScalar(1 + Math.sin(t*2.8)*0.04);
+      archon.userData.halo.rotation.z = t*(0.65 + (bossSceneState.stand*0.4) + (defeatActive ? 1.5*(1-defeatProgress) : 0));
+      archon.userData.halo.scale.setScalar(defeatActive ? Math.max(0.2,1 + burst*0.8 - (collapse*0.58)) : 1 + Math.sin(t*2.8)*0.04);
     }
     if(archon.userData.coreLight){
-      archon.userData.coreLight.intensity = 1.2 + ((Math.sin(t*4.4)+1)*0.22) + (bossSceneState.stand*0.45);
+      archon.userData.coreLight.intensity = defeatActive
+        ? 0.18 + (burst*3.6) + ((1-defeatProgress)*0.7)
+        : 1.2 + ((Math.sin(t*4.4)+1)*0.22) + (bossSceneState.stand*0.45);
+      archon.userData.coreLight.position.y = 1.3 - (collapse*0.42);
+      archon.userData.coreLight.position.z = 0.18 + (collapse*0.2);
     }
     if(archon.userData.eyeL && archon.userData.eyeR){
-      const blink = 0.88 + (Math.sin(t*5.2)*0.12);
+      const blink = defeatActive ? Math.max(0.05,1-collapse) : 0.88 + (Math.sin(t*5.2)*0.12);
       archon.userData.eyeL.scale.y = blink;
       archon.userData.eyeR.scale.y = blink;
+    }
+    if(defeatActive){
+      const bodyOpacity=1 - Math.max(0,(defeatProgress-0.58)/0.42)*0.72;
+      setBossDefeatMaterialOpacity(archon, bodyOpacity);
+      (bossSceneState.defeatFx || []).forEach(obj=>{
+        if(obj.userData.defeatShard){
+          const p=Math.min(1,defeatProgress*1.12);
+          const data=obj.userData.defeatShard;
+          obj.position.set(
+            data.origin.x + data.velocity.x*p,
+            data.origin.y + data.velocity.y*p - (2.15*p*p),
+            data.origin.z + data.velocity.z*p
+          );
+          obj.rotation.x += data.spin.x;
+          obj.rotation.y += data.spin.y;
+          obj.rotation.z += data.spin.z;
+          obj.scale.setScalar(Math.max(0.08,1-(p*0.85)));
+          obj.material.opacity=Math.max(0,1-(p*0.95));
+        } else if(obj.userData.defeatShock){
+          const scale=1 + defeatProgress*8.5;
+          obj.scale.set(scale,scale,scale);
+          obj.material.opacity=Math.max(0,0.68*(1-defeatProgress));
+        } else if(obj.userData.defeatBeam){
+          obj.scale.set(1 + burst*1.25, Math.max(0.05,1-defeatProgress*0.95), 1 + burst*1.25);
+          obj.material.opacity=Math.max(0,0.9*(1-defeatProgress));
+        }
+      });
     }
   }
   (G.medkits || []).forEach((mk,i)=>{
@@ -4297,6 +4363,123 @@ function triggerBossClash(){
   },ENCOUNTER_TRANSITION_MS + 120);
 }
 
+function prepareBossDefeatMaterials(root){
+  root.traverse(obj=>{
+    if(!obj.isMesh || !obj.material) return;
+    const materials=Array.isArray(obj.material) ? obj.material : [obj.material];
+    materials.forEach(mat=>{
+      mat.transparent=true;
+      mat.userData.defeatBaseOpacity = Number.isFinite(mat.opacity) ? mat.opacity : 1;
+    });
+  });
+}
+
+function setBossDefeatMaterialOpacity(root, opacity){
+  root.traverse(obj=>{
+    if(!obj.isMesh || !obj.material) return;
+    const materials=Array.isArray(obj.material) ? obj.material : [obj.material];
+    materials.forEach(mat=>{
+      const base = Number.isFinite(mat.userData.defeatBaseOpacity) ? mat.userData.defeatBaseOpacity : 1;
+      mat.opacity = Math.max(0, Math.min(1, base * opacity));
+      mat.needsUpdate=true;
+    });
+  });
+}
+
+function buildBossDefeatFx(origin){
+  const fx=[];
+  const palette=[0xff2255,currentTheme.accent2,currentTheme.accent,0xffc040];
+  for(let i=0;i<22;i++){
+    const color=palette[i%palette.length];
+    const shard=V(
+      0.06 + Math.random()*0.08,
+      0.06 + Math.random()*0.14,
+      0.16 + Math.random()*0.22,
+      color,
+      color,
+      0.7
+    );
+    shard.position.copy(origin);
+    shard.rotation.set(Math.random()*Math.PI,Math.random()*Math.PI,Math.random()*Math.PI);
+    const angle=(i/22)*Math.PI*2 + ((Math.random()-0.5)*0.5);
+    const speed=0.8 + Math.random()*1.7;
+    shard.userData.defeatShard={
+      origin:origin.clone(),
+      velocity:new THREE.Vector3(Math.cos(angle)*speed,1.0 + Math.random()*1.35,Math.sin(angle)*speed),
+      spin:new THREE.Vector3((Math.random()-0.5)*0.18,(Math.random()-0.5)*0.18,(Math.random()-0.5)*0.18)
+    };
+    shard.material.transparent=true;
+    scene.add(shard);
+    fx.push(shard);
+  }
+
+  const shock=new THREE.Mesh(
+    new THREE.RingGeometry(0.18,0.24,48),
+    new THREE.MeshBasicMaterial({color:currentTheme.accent2,transparent:true,opacity:0.68,side:THREE.DoubleSide})
+  );
+  shock.rotation.x=-Math.PI/2;
+  shock.position.set(origin.x,0.08,origin.z);
+  shock.userData.defeatShock=true;
+  scene.add(shock);
+  fx.push(shock);
+
+  const beam=V(0.1,2.45,0.1,currentTheme.accent2,currentTheme.accent2,1);
+  beam.position.copy(origin);
+  beam.material.transparent=true;
+  beam.material.opacity=0.9;
+  beam.userData.defeatBeam=true;
+  scene.add(beam);
+  fx.push(beam);
+  return fx;
+}
+
+function playBossDefeatSequence(title, sub, cb){
+  const archon=bossSceneState.archon;
+  if(!bossSceneState.active || !archon){
+    triggerStatusBeat(title, sub, 'clear', 960, cb);
+    return;
+  }
+
+  clearTimeout(bossSceneState.riseTimer);
+  clearTimeout(bossSceneState.clashTimer);
+  clearTimeout(bossSceneState.defeatTimer);
+  (bossSceneState.defeatFx || []).forEach(obj=>{
+    if(obj?.parent) obj.parent.remove(obj);
+  });
+
+  const origin=archon.position.clone();
+  origin.y += 1.08;
+  prepareBossDefeatMaterials(archon);
+  bossSceneState.defeatFx=buildBossDefeatFx(origin);
+  bossSceneState.introActive=false;
+  bossSceneState.defeatActive=true;
+  bossSceneState.defeatStart=Date.now();
+  bossSceneState.defeatDuration=2600;
+  bossSceneState.stand=Math.max(0.96,bossSceneState.stand);
+  bossSceneState.targetStand=1;
+  bossSceneState.cameraOverride=true;
+  bossSceneState.cameraPos=new THREE.Vector3(origin.x+2.65,3.55,origin.z+3.1);
+  bossSceneState.lookAt=new THREE.Vector3(origin.x,1.0,origin.z-0.1);
+  bossSceneState.riseTimer=null;
+  bossSceneState.clashTimer=null;
+  G.inputLocked=true;
+  setCameraKick(0.62);
+  playUiTone(82,360,{type:'sawtooth',gain:0.055,endFreq:42});
+  playUiTone(164,240,{type:'triangle',gain:0.034,endFreq:96});
+
+  const bossProfile=getBossProfile();
+  log(`// ${fillText('bossFall',{name:bossProfile.name})}`,'dmg');
+  bossSceneState.defeatTimer=setTimeout(()=>{
+    bossSceneState.defeatTimer=null;
+    triggerStatusBeat(title, sub, 'clear', 980, ()=>{
+      bossSceneState.defeatTimer=setTimeout(()=>{
+        bossSceneState.defeatTimer=null;
+        if(cb) cb();
+      },220);
+    });
+  }, bossSceneState.defeatDuration);
+}
+
 function startBossEncounter(){
   showRoomTravel(
     ROOM_COUNT,
@@ -4526,16 +4709,10 @@ function handleBossSolve(){
   if(boss.phaseIndex >= boss.maxHp - 1){
     const bossProfile=getBossProfile();
     battle.active=false;
-    triggerStatusBeat(
-      fillText('bossFall',{name:bossProfile.name}),
-      fillText('bossFinal',{defeat:bossProfile.defeat, method:solvedMethod}),
-      'clear',
-      760,
-      ()=>{
-        closeBattle(true,{reason:'boss-win', boss:true});
-        winGame();
-      }
-    );
+    const fallTitle=fillText('bossFall',{name:bossProfile.name});
+    const fallSub=fillText('bossFinal',{defeat:bossProfile.defeat, method:solvedMethod});
+    closeBattle(true,{reason:'boss-win', boss:true});
+    playBossDefeatSequence(fallTitle, fallSub, winGame);
     return;
   }
 
