@@ -4,7 +4,6 @@
 
 [Play the Game](https://snekbu-black.github.io/Cipher.Breach/)
 
-![Main Menu](doc_assets/screenshot_01_main_menu.png)
 
 ## About the Game
 
